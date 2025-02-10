@@ -1,0 +1,14 @@
+@import url(root.css);
+
+body{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.container{
+    width: 80vw;
+    min-height: 85vh;
+    background-color: var(--primary-color);
+    margin: auto auto;
+}

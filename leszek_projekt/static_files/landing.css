@@ -1,0 +1,45 @@
+@import url(root.css);
+
+body{
+    background-color: var(--background-color);
+}
+
+h1{
+    text-align: center;
+    margin: 5px;
+    font-size: var(--xlarge-text);
+}
+
+
+.login-container{
+    position: absolute;
+    right: 15px;
+    top: 25px;
+}
+
+.content{
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+}
+
+.card{
+    width: 500px;
+    height: 250px;
+    background-color: var(--primary-color);
+    font-size: var(--large-text);
+    color: var(--text-light-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
+    transition: transform 0.1s ease;
+}
+
+.card:hover{
+    transform: scale(1.05);
+}
