@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'leszek_app'
+    'leszek_app',
+    'django_bootstrap_icons'
 ]
 
 MIDDLEWARE = [

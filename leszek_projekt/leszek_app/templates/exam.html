@@ -1,15 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'exam.css' %}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'exam.css' %}" />
     <title>Document</title>
-</head>
-<body>
-    <div class="container">
-        {{code}}
-    </div>
-</body>
+    <script>
+      async function getData() {
+        const code = "{{examCode}}";
+        try {
+          const response = await fetch(`/getExam/${code}`);
+          const jsonRes = await response.json();
+          console.log(jsonRes);
+        } catch (error) {
+          console.log("ERROR WHILE FETCHING DATA: ", error);
+        }
+      }
+      getData();
+    </script>
+  </head>
+  <body>
+    <div class="container">{{examCode}}</div>
+  </body>
 </html>

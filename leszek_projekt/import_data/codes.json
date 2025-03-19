@@ -1,0 +1,79 @@
+[
+    {
+        "model": "leszek_app.Code",
+        "pk": 1,
+        "fields":{
+            "codeName": "INF.02"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 2,
+        "fields":{
+            "codeName": "INF.03"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 3,
+        "fields":{
+            "codeName": "ELE.10"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 4,
+        "fields":{
+            "codeName": "ELE.11"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 5,
+        "fields":{
+            "codeName": "HGT.02"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 6,
+        "fields":{
+            "codeName": "HGT.12"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 7,
+        "fields":{
+            "codeName": "OGR.03"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 8,
+        "fields":{
+            "codeName": "OGR.04"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 9,
+        "fields":{
+            "codeName": "ROL.02"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 10,
+        "fields":{
+            "codeName": "ROL.08"
+        }
+    },
+    {
+        "model": "leszek_app.Code",
+        "pk": 11,
+        "fields":{
+            "codeName": "SPC.01"
+        }
+    }
+]

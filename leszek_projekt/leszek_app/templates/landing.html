@@ -1,3 +1,4 @@
+{% load bootstrap_icons %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -11,13 +12,18 @@
             const currentUrl = window.location.href;
             window.open(`/exam?code=${classificationName}`)
         }
+        
+        function goToDashboard(){
+            const currentUrl = window.location.href;
+            window.open(`/user`)
+        }
     </script>
 </head>
 <body>
     <header>
         <h1>Witaj w systemie ...</h1>
-        <div class="login-container">
-            <img id="logowanie" src="" alt="logowanie">
+        <div class="login-container" onclick="goToDashboard()">
+            {% bs_icon 'person-circle' size="2.5rem"%}
         </div>
     </header>
     
