@@ -7,20 +7,157 @@
     <link rel="stylesheet" href="{% static 'exam.css' %}" />
     <title>Document</title>
     <script>
+      const code = "{{examCode}}";
+      const answer_id = ["answer_a", "answer_b", "answer_c", "answer_d"];
+      const letters = ["D", "C", "B", "A"];
+      const max_questions = 40;
+
+      function showEndExam() {
+        document.getElementById("nextQuestion").setAttribute("hidden", "true");
+        document.getElementById("endExam").removeAttribute("hidden");
+      }
+      function hideEndExam() {
+        document.getElementById("nextQuestion").removeAttribute("hidden");
+        document.getElementById("endExam").setAttribute("hidden", "true");
+      }
+
+      var currentQuestionIndex = 0;
+      var globalQuestions;
+      async function startExam() {
+        var questions = await getData();
+        globalQuestions = questions.slice(0, max_questions);
+        console.log(globalQuestions);
+        if (globalQuestions.filter((question) => question.answered === false).length === 1) {
+          showEndExam();
+        } else {
+          hideEndExam();
+        }
+        showQuestion(globalQuestions[currentQuestionIndex], currentQuestionIndex);
+      }
+
+      function nextQuestion() {
+        saveQuestion();
+        currentQuestionIndex++;
+        if (currentQuestionIndex >= max_questions) {
+          currentQuestionIndex = 0;
+        }
+        if (globalQuestions[currentQuestionIndex].answered) {
+          nextQuestion();
+          return;
+        } else if (globalQuestions.filter((question) => question.answered === false).length === 1) {
+          showEndExam();
+        } else {
+          hideEndExam();
+        }
+        showQuestion(globalQuestions[currentQuestionIndex], currentQuestionIndex);
+      }
+
+      function saveQuestion() {
+        let checkedAnswer = document.querySelector('input[name="answers"]:checked');
+        if (checkedAnswer != null) {
+          checkedAnswer.checked = false;
+          globalQuestions[currentQuestionIndex].answered = true;
+          globalQuestions[currentQuestionIndex].selected_answer = checkedAnswer.value;
+        }
+      }
+
+      function showQuestion(question, index) {
+        document.getElementById("question-text").innerHTML = "";
+        document.getElementById("current_question").innerText = `${index + 1}.`;
+        document.getElementById("question-text").innerHTML = `<p>${question["question"]}</p>`;
+        let media = question["media"];
+        if (media != "") {
+          if (media.split(".")[1] == "mp4") {
+            document.getElementById(
+              "question-text"
+            ).innerHTML += `<div id='media'><video controls><source src="{% get_static_prefix %}media/${media}" type="video/mp4"></source></video></div>`;
+          } else {
+            document.getElementById(
+              "question-text"
+            ).innerHTML += `<div id='media'><img src="{% get_static_prefix %}media/${media}"  alt="Zdjęcie do zadania"></div>`;
+          }
+        }
+        let copy_answers_id = [...answer_id];
+        for (let length = 4; length > 0; length--) {
+          let answer = question[copy_answers_id.pop(Math.floor(Math.random() * length))];
+          document.getElementById(`label_${letters[length - 1]}`).innerText = answer;
+          document.getElementById(`answer_${letters[length - 1]}`).setAttribute("value", answer);
+        }
+      }
+
+      function endExam() {
+        saveQuestion();
+        if (!globalQuestions.filter((question) => question.answered === false).length) {
+          console.log("Wysłano pytnia:");
+          console.log(globalQuestions);
+        } else {
+          alert("Nie odpowiedziałeś na wszytkie pytania");
+        }
+      }
+
       async function getData() {
-        const code = "{{examCode}}";
         try {
           const response = await fetch(`/getExam/${code}`);
           const jsonRes = await response.json();
-          console.log(jsonRes);
+          const questionsObject = [];
+          jsonRes.forEach((question) => {
+            questionsObject.push({
+              ...question,
+              answered: false,
+              selected_answer: "",
+            });
+          });
+          return questionsObject;
         } catch (error) {
           console.log("ERROR WHILE FETCHING DATA: ", error);
         }
       }
-      getData();
+
+      startExam();
+
+
+    </script>
+    <script>
+      window.onbeforeunload = function() {
+  return "Jesteś pewien? Utracisz dotychczasowy postęp, a egzamin wygeneruje się na nowo. ";
+};
     </script>
   </head>
   <body>
-    <div class="container">{{examCode}}</div>
+    <div class="container">
+      <div class="exam_content">
+      <p id="current_question"></p>
+      <div id="question-text"></div>
+      <div class="answers">
+        <label for="answer_A" class="helper_label">
+        <div class="wrapper">
+          <input type="radio" name="answers" id="answer_A" required />
+          <label for="answer_A" id="label_A"></label>
+        </div>
+        </label>
+        <label for="answer_B" class="helper_label">
+        <div class="wrapper">
+          <input type="radio" name="answers" id="answer_B" />
+          <label for="answer_B" id="label_B"></label>
+        </div>
+        </label>
+        <label for="answer_C" class="helper_label">
+        <div class="wrapper">
+          <input type="radio" name="answers" id="answer_C" />
+          <label for="answer_C" id="label_C"></label>
+        </div>
+        </label>
+        <label for="answer_D" class="helper_label">
+        <div class="wrapper">
+          <input type="radio" name="answers" id="answer_D" />
+          <label for="answer_D" id="label_D"></label>
+        </div></label>
+      </div>
+    </div>
+      <div class="button-container">
+        <button onclick="nextQuestion()" id="nextQuestion">Następne pytanie</button>
+        <button onclick="endExam()" id="endExam" hidden>Zakończ egzamin</button>
+      </div>
+    </div>
   </body>
 </html>

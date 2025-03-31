@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from random import sample
 from .models import Question, Code
+from json import dumps
 from django.core.serializers import serialize
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseNotFound
@@ -25,8 +26,8 @@ def getExam(request: HttpRequest, examCode):
         questions = []
         numbers = sample(range(1, count + 1), 40)
         for n in numbers:
-            questions.append(Question.objects.get(id=n))
-        return HttpResponse(serialize("json", questions))
+            questions.append(Question.objects.get(id=n).prepare())
+        return HttpResponse(dumps(questions))
     else:
         # we know it should be 404 but ... it is easier
         return HttpResponse(serialize("json",[]))
