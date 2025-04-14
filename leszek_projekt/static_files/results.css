@@ -1,0 +1,16 @@
+@import url(root.css);
+
+body{
+    background-color: var(--background-color);
+}
+
+.answer{
+    border: 1px solid black;
+}
+
+.question{
+    margin: 20px;
+    padding: 10px;
+    background-color: var(--primary-color);
+    border-radius: 15px;
+}

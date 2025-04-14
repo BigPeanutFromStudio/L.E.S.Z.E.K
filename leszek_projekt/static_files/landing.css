@@ -2,6 +2,7 @@
 
 body{
     background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 h1{
@@ -35,7 +36,7 @@ h1{
     height: 250px;
     background-color: var(--primary-color);
     font-size: var(--large-text);
-    color: var(--text-light-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;

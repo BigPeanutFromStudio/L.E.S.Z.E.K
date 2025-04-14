@@ -27,7 +27,7 @@ class Question(models.Model):
             mediaRef = "vid" if self.media.split('.')[1] == "mp4" else "img" 
         else:
             mediaRef = '0'
-        return f'{self.code_ID}_{mediaRef}'
+        return f'{self.id}_{self.code_ID}_{mediaRef}'
 
     def prepare(self) -> Dict[str,Any]:
         return {

@@ -14,11 +14,9 @@
 
       function showEndExam() {
         document.getElementById("nextQuestion").setAttribute("hidden", "true");
-        document.getElementById("endExam").removeAttribute("hidden");
       }
       function hideEndExam() {
         document.getElementById("nextQuestion").removeAttribute("hidden");
-        document.getElementById("endExam").setAttribute("hidden", "true");
       }
 
       var currentQuestionIndex = 0;
@@ -66,7 +64,7 @@
         document.getElementById("current_question").innerText = `${index + 1}.`;
         document.getElementById("question-text").innerHTML = `<p>${question["question"]}</p>`;
         let media = question["media"];
-        if (media != "") {
+        if (media != "" && media != null) {
           if (media.split(".")[1] == "mp4") {
             document.getElementById(
               "question-text"
@@ -85,14 +83,27 @@
         }
       }
 
-      function endExam() {
+      async function endExam() {
         saveQuestion();
-        if (!globalQuestions.filter((question) => question.answered === false).length) {
-          console.log("Wysłano pytnia:");
-          console.log(globalQuestions);
-        } else {
-          alert("Nie odpowiedziałeś na wszytkie pytania");
-        }
+        const questionsToSend = Object.fromEntries(globalQuestions.map((question) => [question.id, question.selected_answer]));
+        // DEBUG
+        console.log("Wysłano pytnia:");
+        console.log(questionsToSend);
+        let headers = new Headers();
+        // add header from cookie
+        const csrftoken = document.cookie
+          .split(";")
+          .filter((cookie) => cookie.includes("csrftoken"))[0]
+          .split("=")[1];
+
+        headers.append("X-CSRFToken", csrftoken);
+        const response = await fetch("/results", {
+          method: "POST",
+          body: JSON.stringify({ questions: questionsToSend }),
+          credentials: "same-origin",
+          headers: headers,
+        });
+        window.open("/getResults", "_self");
       }
 
       async function getData() {
@@ -114,49 +125,47 @@
       }
 
       startExam();
-
-
     </script>
     <script>
-      window.onbeforeunload = function() {
-  return "Jesteś pewien? Utracisz dotychczasowy postęp, a egzamin wygeneruje się na nowo. ";
-};
+      window.onbeforeunload = function () {
+        return "Jesteś pewien? Utracisz dotychczasowy postęp, a egzamin wygeneruje się na nowo. ";
+      };
     </script>
   </head>
   <body>
     <div class="container">
       <div class="exam_content">
-      <p id="current_question"></p>
-      <div id="question-text"></div>
-      <div class="answers">
-        <label for="answer_A" class="helper_label">
-        <div class="wrapper">
-          <input type="radio" name="answers" id="answer_A" required />
-          <label for="answer_A" id="label_A"></label>
+        <p id="current_question"></p>
+        <div id="question-text"></div>
+        <div class="answers">
+          <label for="answer_A" class="helper_label">
+            <div class="wrapper">
+              <input type="radio" name="answers" id="answer_A" required />
+              <label for="answer_A" id="label_A"></label>
+            </div>
+          </label>
+          <label for="answer_B" class="helper_label">
+            <div class="wrapper">
+              <input type="radio" name="answers" id="answer_B" />
+              <label for="answer_B" id="label_B"></label>
+            </div>
+          </label>
+          <label for="answer_C" class="helper_label">
+            <div class="wrapper">
+              <input type="radio" name="answers" id="answer_C" />
+              <label for="answer_C" id="label_C"></label>
+            </div>
+          </label>
+          <label for="answer_D" class="helper_label">
+            <div class="wrapper">
+              <input type="radio" name="answers" id="answer_D" />
+              <label for="answer_D" id="label_D"></label></div
+          ></label>
         </div>
-        </label>
-        <label for="answer_B" class="helper_label">
-        <div class="wrapper">
-          <input type="radio" name="answers" id="answer_B" />
-          <label for="answer_B" id="label_B"></label>
-        </div>
-        </label>
-        <label for="answer_C" class="helper_label">
-        <div class="wrapper">
-          <input type="radio" name="answers" id="answer_C" />
-          <label for="answer_C" id="label_C"></label>
-        </div>
-        </label>
-        <label for="answer_D" class="helper_label">
-        <div class="wrapper">
-          <input type="radio" name="answers" id="answer_D" />
-          <label for="answer_D" id="label_D"></label>
-        </div></label>
       </div>
-    </div>
       <div class="button-container">
         <button onclick="nextQuestion()" id="nextQuestion">Następne pytanie</button>
-        <button onclick="endExam()" id="endExam" hidden>Zakończ egzamin</button>
+        <button onclick="endExam()" id="endExam">Zakończ egzamin</button>
       </div>
     </div>
   </body>
