@@ -1,11 +1,13 @@
-from django.shortcuts import render 
+from django.shortcuts import render, redirect
 from random import sample
 from .models import Question, Code
 from json import dumps, loads
 from django.core.serializers import serialize
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, JsonResponse 
-
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def landing(request: HttpRequest):
@@ -57,4 +59,37 @@ def getExamResults(request: HttpRequest):
     else:
         return JsonResponse({"msg": "Brak wyników ostatniego egzaminu"})
     
-    
+
+@login_required(login_url="/login/")
+def application_form_view(request, code):
+    return render(request, "application_form.html", {"code": code})
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            login(request, form.save())
+            if "next" in request.POST:
+                return redirect(request.POST.get('next'))
+            return redirect("/")
+    else:
+        form = UserCreationForm()
+    return render(request, "user/register.html", {"form": form})
+
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            if "next" in request.POST:
+                return redirect(request.POST.get('next'))
+            return redirect("/")
+    else:
+        form = AuthenticationForm()
+    return render(request, "user/login.html", {"form": form})
+
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+        return redirect("/")

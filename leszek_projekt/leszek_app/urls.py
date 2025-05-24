@@ -1,12 +1,16 @@
 from . import views
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", views.landing, name="landing"),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
     path("exam/", views.exam, name="exam"),
     path("getExam/<str:examCode>", views.getExam, name="getExam"),
     path("results", views.examResults, name="examResults"),
     path("getResults", views.displayExamResults, name="displayExamResults"),
-    path("getExamResults", views.getExamResults, name="getExamResults")
+    path("getExamResults", views.getExamResults, name="getExamResults"),
+    path('register/', views.register_view, name='register'),
+    path('application_form/<str:code>',views.application_form_view,name = 'application_form'),
+    path('logout/', views.logout_view, name="logout")
 ]

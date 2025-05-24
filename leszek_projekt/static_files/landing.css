@@ -1,51 +1,73 @@
 @import url(root.css);
 
-body{
-    background-color: var(--background-color);
-    color: var(--text-color);
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-h1{
-    text-align: center;
-    margin: 5px;
-    font-size: var(--xlarge-text);
+h1 {
+  text-align: center;
+  margin: 5px;
+  font-size: var(--xlarge-text);
 }
 
-
-.login-container{
-    position: absolute;
-    right: 15px;
-    top: 25px;
-    cursor: pointer;
-    transition: transform 0.1s ease;
+.login-container {
+  position: absolute;
+  right: 15px;
+  top: 25px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
 }
-.login-container:hover{
-    transform: scale(1.1);
-}
-
-.content{
-    margin-top: 50px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    justify-items: center;
+.login-container:hover {
+  transform: scale(1.1);
 }
 
-.card{
-    width: 500px;
-    height: 250px;
-    background-color: var(--primary-color);
-    font-size: var(--large-text);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    cursor: pointer;
-    box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
-    transition: transform 0.1s ease;
+.content {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 10px;
+  justify-items: center;
 }
 
-.card:hover{
-    transform: scale(1.03);
+.card {
+  position: relative;
+  width: 450px;
+  height: 250px;
+  background-color: var(--primary-color);
+  font-size: var(--large-text);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
+  transition: transform 0.1s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.edit-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+#logout-button {
+  all: unset;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+}
+#logout-button:hover {
+  transform: scale(1.1);
+}
+#logout-form {
+  display: inline;
 }

@@ -1,0 +1,77 @@
+@import url(root.css);
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form-content {
+  background-color: var(--primary-color);
+  padding: 50px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: var(--secondary-color);
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: var(--xlarge-text);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-color);
+  font-size: var(--medium-text);
+}
+
+.helptext {
+  font-size: var(--small-text);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+input[type='text'],
+input[type='password'] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: var(--medium-text);
+}
+button {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: var(--medium-text);
+  transition: transform 0.1s ease;
+  margin: 0 auto;
+  display: block;
+}
+button:hover {
+  transform: scale(1.05);
+}
+
+p {
+  margin-top: 20px;
+  color: var(--text-color);
+  font-size: var(--small-text);
+  text-align: center;
+}
+
+a {
+  color: var(--secondary-color);
+}
