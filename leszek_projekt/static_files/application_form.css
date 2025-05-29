@@ -1,0 +1,196 @@
+@import url(root.css);
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: var(--background-color);
+  margin: 0; /* Added to ensure no default body margin */
+  font-family: sans-serif; /* Added a default font */
+}
+
+.container {
+  position: relative;
+  width: 80vw;
+  height: 85vh;
+  background-color: var(--primary-color);
+  margin: auto auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-sizing: border-box; /* Added for better layout control */
+}
+
+.exam_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: center;
+  height: 80%;
+  color: var(--text-color);
+}
+
+#current_question {
+  font-size: var(--medium-text);
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(250px, auto));
+  justify-content: center;
+  gap: 25px;
+  row-gap: 35px;
+  margin-top: 20px; /* Added some margin */
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  /* justify-items: center; /* Not a valid property, use align-items or justify-content on parent */
+  align-items: center;
+  gap: 20px;
+  background-color: var(--secondary-color);
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
+  height: 100%;
+}
+
+label {
+  /* General label styling */
+  font-size: var(--medium-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+input[type='radio'] {
+  cursor: pointer;
+  margin-right: 5px; /* Added some spacing */
+}
+
+.helper_label {
+  /* This is the main clickable label container */
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.helper_label:hover {
+  transform: scale(1.07);
+}
+
+#question-text {
+  display: flex;
+  flex-direction: column;
+  /* justify-items: center; /* Not valid, use align-items */
+  align-items: center;
+  text-align: center; /* Added for better text centering */
+  font-size: var(--large-text);
+  margin-bottom: 20px; /* Added some margin */
+}
+
+video,
+img {
+  max-width: 50vw;
+  max-height: 30vh; /* Added max-height to prevent large media from breaking layout */
+  object-fit: contain; /* Ensures media scales nicely */
+}
+
+#media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.button-container {
+  position: relative; /* Changed to relative for simpler positioning within flow or absolute to parent */
+  height: 20%; /* This might be too large if other content pushes it */
+  width: 100%;
+  display: flex; /* Added for easier button positioning */
+  justify-content: flex-end; /* Aligns button to the right */
+  align-items: center; /* Vertically centers button in the allocated space */
+  padding-top: 20px; /* Added some space above buttons */
+}
+
+.button-container button {
+  /* General button styling */
+  border: none;
+  background-color: var(--secondary-color);
+  padding: 10px 20px; /* Adjusted padding */
+  border-radius: 15px;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
+  font-size: var(--medium-text);
+  color: var(--text-color);
+  /* Removed absolute positioning to let flexbox handle it */
+}
+.button-container button:hover {
+  transform: scale(1.07);
+}
+
+/* Removed specific #endExam button as it's covered by general button style now
+     If you need two distinct buttons, you can add it back with different positioning.
+     The current setup assumes one main action button.
+  */
+/*
+  .button-container button#endExam {
+      left: 30px;
+  }
+  */
+
+/* TOAST CSS STYLES (as provided by you) */
+.toastContain {
+  z-index: 1050; /* Increased z-index */
+  position: fixed;
+  left: 50%;
+  bottom: 4rem;
+  width: fit-content;
+  min-width: 18rem;
+  transform: translateX(-50%);
+  /* To see multiple toasts stack if they appear close together */
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center; /* Ensures toasts within container are centered if their width is less than min-width */
+}
+
+.toast {
+  opacity: 0;
+  min-height: 2rem;
+  /* margin-top: -2.5rem; /* Initial off-screen position for slide-down */
+  margin-bottom: -2.5rem; /* Adjusted for flex-direction: column-reverse stacking */
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem; /* Combined padding */
+  background-color: #ffffff;
+  border: 1px solid #e7e5e4;
+  text-align: center;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  width: auto; /* Let content determine width up to max-width */
+  max-width: 90vw; /* Prevent overly wide toasts */
+  transform: scale(0.9) translateY(50px); /* Initial state: slightly scaled down and shifted down */
+  /* transition: margin-top 0.5s, transform 0.5s, opacity 0.5s; */
+  transition: margin-bottom 0.5s, transform 0.5s, opacity 0.5s; /* Adjusted for flex-direction */
+}
+
+.toast.open {
+  /* margin-top: 0.5rem; /* Final position on screen */
+  margin-bottom: 0.5rem; /* Adjusted for flex-direction */
+  transform: scale(1) translateY(0); /* Final state: full scale, original Y position */
+  opacity: 1;
+}
+
+.toast.success {
+  background-color: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.toast.failure {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.toast.warning {
+  background-color: #ffedd5;
+  border-color: #fdba74;
+  color: #9a3412;
+}

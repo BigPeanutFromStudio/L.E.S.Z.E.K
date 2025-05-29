@@ -17,7 +17,9 @@ class Question(models.Model):
     answer_d = models.CharField(max_length=5000)
     correct_answer = models.CharField(null=True,blank=True,max_length=5000)
     media = models.CharField(null=True,blank=True, max_length=5000) #FilePathField
+    # TODO: change _ID => _id
     code_ID = models.ForeignKey(Code,on_delete=models.DO_NOTHING)
+    # TODO: add status to filter of pending questions
     
     class Meta:
         unique_together = ('question', 'media', 'code_ID')
@@ -39,14 +41,13 @@ class Question(models.Model):
             'answer_d':self.answer_d,
             'media':self.media
         }
-        ...
 
 class QuestionApplication(models.Model):
-    questionID = models.ForeignKey(Question,on_delete=models.DO_NOTHING)
+    question_id = models.ForeignKey(Question,on_delete=models.DO_NOTHING)
     correct_answer = models.CharField(max_length=5000)
-    user_ID = models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(User,on_delete=models.DO_NOTHING)
     sent_at = models.DateTimeField()
     def __str__(self):
-        return f'{self.questionID.code_ID} - {self.questionID.question}'
+        return f'{self.question_id.code_ID} - {self.question_id.question}'
     
     

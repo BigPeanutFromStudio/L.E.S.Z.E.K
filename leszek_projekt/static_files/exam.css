@@ -38,7 +38,6 @@ body {
   row-gap: 35px;
 }
 
-
 .wrapper {
   display: flex;
   flex-direction: row;
@@ -55,9 +54,10 @@ body {
 label {
   font-size: var(--medium-text);
   cursor: pointer;
+  user-select: none;
 }
 
-input[type="radio"] {
+input[type='radio'] {
   cursor: pointer;
 }
 

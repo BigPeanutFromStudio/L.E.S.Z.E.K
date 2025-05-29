@@ -1,7 +1,7 @@
-import datetime
+from datetime import datetime
 from django.shortcuts import render, redirect
-from random import sample
-from .models import Question, Code
+from random import sample, randint  
+from .models import Question, Code, QuestionApplication
 from json import dumps, loads
 from django.core.serializers import serialize
 from django.http.request import HttpRequest
@@ -44,7 +44,7 @@ def postExamResults(request: HttpRequest):
       questionsList.append(currentQuestion)
     request.session['score'] = score
     request.session['questions'] = questionsList
-    request.session['date'] = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+    request.session['date'] = datetime.now().strftime("%d/%m/%Y %H:%M")
 
 
     return HttpResponse(serialize("json", [])) 
@@ -61,7 +61,25 @@ def displayExamResults(request: HttpRequest):
 
 @login_required(login_url="/login/")
 def application_form_view(request, code):
-    return render(request, "application_form.html", {"code": code})
+    count = Question.objects.filter(code_ID=Code.objects.get(codeName=code),correct_answer__isnull=True).count()
+    print(count)
+    n = randint(1, count)
+    question = Question.objects.get(id=n)
+    # if count:
+    #     questions = []
+    #     numbers = sample(range(1, count + 1), 40)
+    #     for n in numbers:
+    #         questions.append(Question.objects.get(id=n).prepare())
+    return render(request, "application_form.html", {"code": code,"question":question,"question_json":dumps(question.prepare())})
+
+@login_required(login_url="/login/")
+def save_correct_answer(request: HttpRequest):
+    question = Question.objects.get(id = loads(request.body)["question"]["id"])
+    correct_answer = loads(request.body)["question"]["correct_answer"]
+
+    question_aplication = QuestionApplication(question_id = question,correct_answer = correct_answer,user_id=request.user,sent_at = datetime.now())
+    question_aplication.save()
+    return JsonResponse({"success": True})
 
 
 def register_view(request):

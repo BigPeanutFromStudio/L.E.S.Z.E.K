@@ -10,5 +10,7 @@ urlpatterns = [
     path("getResults", views.displayExamResults, name="displayExamResults"),
     path('register/', views.register_view, name='register'),
     path('application_form/<str:code>',views.application_form_view,name = 'application_form'),
-    path('logout/', views.logout_view, name="logout")
+    path('logout/', views.logout_view, name="logout"),
+    path('updateQuestion',views.save_correct_answer, name='save_correct_answer')
+    
 ]

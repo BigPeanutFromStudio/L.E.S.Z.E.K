@@ -1,11 +1,182 @@
+{% load static %} {% load bootstrap_icons %}
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'application_form.css' %}" />
     <title>Document</title>
-</head>
-<body>
-    <h1>Tutaj będzie formularz dla pytań z {{ code }}</h1>
-</body>
+    <script>
+      // TOAST.JS (your version)
+      const FADE_DUR = 100;
+      const DISPLAY_DUR = 1000;
+      let toastContain;
+
+      function ensureToastContainer() {
+        if (!toastContain) {
+          toastContain = document.createElement('div');
+          toastContain.classList.add('toastContain');
+          document.body.appendChild(toastContain);
+        }
+      }
+
+      function toast(message, extraClasses, extraTime) {
+        ensureToastContainer();
+
+        const EL = document.createElement('div');
+        EL.classList.add('toast');
+        if (extraClasses && typeof extraClasses === 'string') {
+          // Ensure extraClasses is a string
+          EL.classList.add(extraClasses);
+        } else if (Array.isArray(extraClasses)) {
+          // Handle if it's still an array (e.g. for multiple classes)
+          EL.classList.add(...extraClasses);
+        }
+        EL.innerText = message;
+
+        // toastContain.appendChild(EL); // Original: for standard stacking
+        toastContain.prepend(EL); // For flex-direction: column-reverse, prepend puts new item at visual "top" of stack
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            EL.classList.add('open');
+          });
+        });
+
+        setTimeout(() => {
+          EL.classList.remove('open');
+        }, DISPLAY_DUR + extraTime);
+
+        setTimeout(() => {
+          if (EL.parentNode === toastContain) {
+            toastContain.removeChild(EL);
+          }
+        }, DISPLAY_DUR + FADE_DUR + 100 + extraTime);
+      }
+      window.showToast = toast; // Make it globally accessible for the button
+
+      var globalQuestion = null;
+
+      function startExam() {
+        var question = JSON.parse(`{{ question_json|safe }}`);
+        globalQuestion = question;
+        showQuestion(question);
+      }
+
+      function showQuestion(question) {
+        document.getElementById('question-text').innerHTML = '';
+        document.getElementById(
+          'question-text'
+        ).innerHTML = `<p>${question['question']}</p>`;
+        let media = question['media'];
+        if (media != '' && media != null) {
+          if (media.split('.')[1] == 'mp4') {
+            document.getElementById(
+              'question-text'
+            ).innerHTML += `<div id='media'><video controls><source src="{% get_static_prefix %}media/${media}" type="video/mp4"></source></video></div>`;
+          } else {
+            document.getElementById(
+              'question-text'
+            ).innerHTML += `<div id='media'><img src="{% get_static_prefix %}media/${media}"  alt="Zdjęcie do zadania"></div>`;
+          }
+        }
+      }
+
+      async function endExam() {
+        try {
+          const questionToSend = {
+            ...globalQuestion,
+            correct_answer: document.querySelector(
+              'input[name="answers"]:checked'
+            ).value,
+          };
+          let headers = new Headers();
+          // add header from cookie
+          const csrftoken = document.cookie
+            .split(';')
+            .filter((cookie) => cookie.includes('csrftoken'))[0]
+            .split('=')[1];
+
+          headers.append('X-CSRFToken', csrftoken);
+          const response = await fetch('/updateQuestion', {
+            method: 'POST',
+            body: JSON.stringify({ question: questionToSend }),
+            credentials: 'same-origin',
+            headers: headers,
+          });
+          showToast('Odpowiedź została przesłana', 'success', 0);
+          setTimeout(() => {
+            location.reload();
+          }, FADE_DUR + DISPLAY_DUR);
+        } catch (error) {
+          showToast('Wystąpił błąd: ' + error, 'failure', 1500);
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        startExam();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="exam_content">
+        <p id="current_question"></p>
+        <div id="question-text"></div>
+        <div class="answers">
+          <label for="answer_A" class="helper_label">
+            <div class="wrapper">
+              <input
+                type="radio"
+                name="answers"
+                id="answer_A"
+                required
+                value="{{question.answer_a}}"
+              />
+              <label for="answer_A" id="label_A">{{question.answer_a}}</label>
+            </div>
+          </label>
+          <label for="answer_B" class="helper_label">
+            <div class="wrapper">
+              <input
+                type="radio"
+                name="answers"
+                id="answer_B"
+                value="{{question.answer_b}}"
+              />
+              <label for="answer_B" id="label_B">{{question.answer_b}}</label>
+            </div>
+          </label>
+          <label for="answer_C" class="helper_label">
+            <div class="wrapper">
+              <input
+                type="radio"
+                name="answers"
+                id="answer_C"
+                value="{{question.answer_c}}"
+              />
+              <label for="answer_C" id="label_C">{{question.answer_c}}</label>
+            </div>
+          </label>
+          <label for="answer_D" class="helper_label">
+            <div class="wrapper">
+              <input
+                type="radio"
+                name="answers"
+                id="answer_D"
+                value="{{question.answer_d}}"
+              />
+              <label for="answer_D" id="label_D">{{question.answer_d}}</label>
+            </div></label
+          >
+        </div>
+      </div>
+      <div class="button-container">
+        <button onclick="endExam()" id="nextQuestion">
+          Prześlij odpowiedź
+        </button>
+      </div>
+    </div>
+  </body>
 </html>
