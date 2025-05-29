@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect
 from random import sample
 from .models import Question, Code
@@ -18,23 +19,18 @@ def landing(request: HttpRequest):
 
 def exam(request: HttpRequest):
     examCode = request.GET.get("code")
-    context = {"examCode": examCode}
-    return render(request, "exam.html", context)
-
-
-def getExam(request: HttpRequest, examCode):
     count = Question.objects.filter(code_ID=Code.objects.get(codeName=examCode)).count()
     if count:
         questions = []
         numbers = sample(range(1, count + 1), 40)
         for n in numbers:
             questions.append(Question.objects.get(id=n).prepare())
-        return HttpResponse(dumps(questions))
-    else:
-        # we know it should be 404 but ... it is easier
-        return HttpResponse(serialize("json",[]))
+    
+    context = {"examCode": examCode, "questions": dumps(questions)}
+    return render(request, "exam.html", context)
 
-def examResults(request: HttpRequest):
+
+def postExamResults(request: HttpRequest):
     questions = loads(request.body)["questions"]
     score = 0
     questionsList = []
@@ -48,17 +44,20 @@ def examResults(request: HttpRequest):
       questionsList.append(currentQuestion)
     request.session['score'] = score
     request.session['questions'] = questionsList
+    request.session['date'] = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
+
+
     return HttpResponse(serialize("json", [])) 
 
 def displayExamResults(request: HttpRequest):
-    return render(request, "results.html")
-
-def getExamResults(request: HttpRequest):
     if request.session.has_key("score"):
-        return JsonResponse({"msg": "Success", "questions": request.session['questions'], "score": request.session['score']})
+        results = dumps({"msg": "Success", "questions": request.session['questions'], "score": request.session['score'],"date":request.session['date']})
     else:
-        return JsonResponse({"msg": "Brak wyników ostatniego egzaminu"})
-    
+        results = {"msg": "Brak wyników ostatniego egzaminu"}
+
+    return render(request, "results.html", {"results": results})
+
+
 
 @login_required(login_url="/login/")
 def application_form_view(request, code):

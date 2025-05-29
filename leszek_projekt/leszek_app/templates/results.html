@@ -7,46 +7,58 @@
     <link rel="stylesheet" href="{% static 'results.css' %}" />
     <title>Wyniki</title>
     <script>
+      // Whoever is working on this code, I'm sorry
       function createDiv(question, answers, correctanswer, selected_answer) {
-        const div = document.createElement("div");
-        div.setAttribute("class", "question")
+        const div = document.createElement('div');
+        div.setAttribute('class', 'question');
         const text = document.createTextNode(question);
         div.appendChild(text);
         answers.forEach((answer) => {
-          const answerDiv = document.createElement("div");
+          const answerDiv = document.createElement('div');
           const text = document.createTextNode(answer);
           answerDiv.appendChild(text);
-          const color = answer === correctanswer ? "green" : "red";
-          answerDiv.style.backgroundColor = answer === selected_answer ? color : "";
-          answerDiv.setAttribute("class", "answer")
+          const color = answer === correctanswer ? 'green' : 'red';
+          answerDiv.style.backgroundColor =
+            answer === selected_answer || answer === correctanswer ? color : '';
+          answerDiv.setAttribute('class', 'answer');
           div.appendChild(answerDiv);
         });
 
         document.body.appendChild(div);
       }
 
-      async function getData() {
-        const data = await fetch("/getExamResults")
-          .then((res) => res.json())
-          .then((res) => {
-            return res;
-          });
-        if (data.msg === "Success") {
+      function getData() {
+        const json = `{{ results|safe }}`;
+        const data = JSON.parse(json);
+        if (data.msg === 'Success') {
           console.log(data.questions);
-          document.getElementById("score").innerText = "wynik: " + data.score
+          document.getElementById('score').innerText =
+            'Wynik: ' + data.score + '/40';
+          document.getElementById('date').innerText = data.date;
           data.questions.forEach((question) => {
-            createDiv(question.fields.question, [question.fields.answer_a, question.fields.answer_b, question.fields.answer_c ,question.fields.answer_d], question.fields.correct_answer, question.fields.selected_answer);
+            createDiv(
+              question.fields.question,
+              [
+                question.fields.answer_a,
+                question.fields.answer_b,
+                question.fields.answer_c,
+                question.fields.answer_d,
+              ],
+              question.fields.correct_answer,
+              question.fields.selected_answer
+            );
           });
         } else {
           document.write(data.msg);
         }
       }
-      getData();
+      document.addEventListener('DOMContentLoaded', function () {
+        getData();
+      });
     </script>
   </head>
   <body>
-    <div id="score">
-
-    </div>
+    <h1 id="score"></h1>
+    <h2 id="date"></h2>
   </body>
 </html>
