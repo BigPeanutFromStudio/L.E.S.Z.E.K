@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Code',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('codeName', models.CharField(max_length=5000)),
+                ('code_name', models.CharField(max_length=5000)),
             ],
         ),
         migrations.CreateModel(
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('answer_d', models.CharField(max_length=5000)),
                 ('correct_answer', models.CharField(max_length=5000, null=True)),
                 ('media', models.CharField(max_length=5000, null=True)),
-                ('code_ID', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='leszek_app.code')),
+                ('code_id', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='leszek_app.code')),
             ],
         ),
         migrations.CreateModel(

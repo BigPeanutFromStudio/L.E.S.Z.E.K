@@ -1,4 +1,4 @@
-{% load static %}
+{% load bootstrap_icons %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,17 +12,25 @@
         const div = document.createElement('div');
         div.setAttribute('class', 'question');
         const text = document.createTextNode(question);
-        div.appendChild(text);
+        const p = document.createElement('p');
+        p.classList.add('question-text');
+        p.appendChild(text);
+        div.appendChild(p);
+        const answersDiv = document.createElement('div');
+        answersDiv.classList.add('answers');
         answers.forEach((answer) => {
           const answerDiv = document.createElement('div');
           const text = document.createTextNode(answer);
           answerDiv.appendChild(text);
-          const color = answer === correctanswer ? 'green' : 'red';
+          const color =
+            answer === correctanswer ? 'var(--green)' : 'var(--red)';
           answerDiv.style.backgroundColor =
             answer === selected_answer || answer === correctanswer ? color : '';
           answerDiv.setAttribute('class', 'answer');
-          div.appendChild(answerDiv);
+          answersDiv.appendChild(answerDiv);
         });
+
+        div.appendChild(answersDiv);
 
         document.body.appendChild(div);
       }
@@ -55,10 +63,22 @@
       document.addEventListener('DOMContentLoaded', function () {
         getData();
       });
+
+      function goHome() {
+        const currentUrl = window.location.href;
+        window.open('/', '_self');
+      }
     </script>
   </head>
   <body>
-    <h1 id="score"></h1>
-    <h2 id="date"></h2>
+    <div class="header">
+      <div class="home-btn" onclick="goHome()">
+        {% bs_icon 'house' size="3rem"%}
+      </div>
+      <div class="data">
+        <h1 id="score"></h1>
+        <h2 id="date"></h2>
+      </div>
+    </div>
   </body>
 </html>

@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='question',
-            unique_together={('question', 'media', 'code_ID')},
+            unique_together={('question', 'media', 'code_id')},
         ),
         migrations.DeleteModel(
             name='User',

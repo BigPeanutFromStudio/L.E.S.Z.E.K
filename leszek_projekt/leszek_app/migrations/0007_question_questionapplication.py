@@ -24,10 +24,10 @@ class Migration(migrations.Migration):
                 ('answer_d', models.CharField(max_length=5000)),
                 ('correct_answer', models.CharField(blank=True, max_length=5000, null=True)),
                 ('media', models.CharField(blank=True, max_length=5000, null=True)),
-                ('code_ID', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='leszek_app.code')),
+                ('code_id', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='leszek_app.code')),
             ],
             options={
-                'unique_together': {('question', 'media', 'code_ID')},
+                'unique_together': {('question', 'media', 'code_id')},
             },
         ),
         migrations.CreateModel(

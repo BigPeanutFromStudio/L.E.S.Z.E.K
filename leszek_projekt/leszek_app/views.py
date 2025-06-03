@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from random import sample, randint  
 from .models import Question, Code, QuestionApplication
 from json import dumps, loads
+from django.db.models import Count
 from django.core.serializers import serialize
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, JsonResponse 
@@ -13,13 +14,19 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 def landing(request: HttpRequest):
     classifications = Code.objects.all()
-    context = {"classifications": classifications}
+    classifications_quantities = {}
+    for c in classifications:
+        classifications_quantities[c.code_name] = Question.objects.filter(code_id=c).count()
+    # question_quantities = Question.objects.values('code_id__code_name').annotate(count=Count('code_id'))
+    # print(list(Question.objects.values('code_id__code_name').annotate(count=Count('code_id'))))
+    # print(classifications_quantities)  # Debugging
+    context = {"classifications": classifications_quantities}
     return render(request, "landing.html", context)
 
 
 def exam(request: HttpRequest):
     examCode = request.GET.get("code")
-    count = Question.objects.filter(code_ID=Code.objects.get(codeName=examCode)).count()
+    count = Question.objects.filter(code_id=Code.objects.get(code_name=examCode)).count()
     if count:
         questions = []
         numbers = sample(range(1, count + 1), 40)
@@ -34,7 +41,6 @@ def postExamResults(request: HttpRequest):
     questions = loads(request.body)["questions"]
     score = 0
     questionsList = []
-    # TODO: pass selected answer as well
     for questionIndex in questions:
       currentQuestion = Question.objects.filter(id=questionIndex)
       currentQuestion = loads(serialize("json", currentQuestion))[0]
@@ -61,16 +67,11 @@ def displayExamResults(request: HttpRequest):
 
 @login_required(login_url="/login/")
 def application_form_view(request, code):
-    count = Question.objects.filter(code_ID=Code.objects.get(codeName=code),correct_answer__isnull=True).count()
-    print(count)
-    n = randint(1, count)
-    question = Question.objects.get(id=n)
-    # if count:
-    #     questions = []
-    #     numbers = sample(range(1, count + 1), 40)
-    #     for n in numbers:
-    #         questions.append(Question.objects.get(id=n).prepare())
-    return render(request, "application_form.html", {"code": code,"question":question,"question_json":dumps(question.prepare())})
+    unanswered_questions = Question.objects.filter(code_id=Code.objects.get(code_name=code),correct_answer__isnull=True).all()
+    random_q = unanswered_questions.exclude(question__in=QuestionApplication.objects.all().values('question_id__question')).order_by('?').first()
+    # DEBUG
+    # print(unanswered_questions.exclude(question__in=QuestionApplication.objects.all().values('question_id__question')).count())
+    return render(request, "application_form.html", {"code": code,"question":random_q,"question_json":dumps(random_q.prepare())})
 
 @login_required(login_url="/login/")
 def save_correct_answer(request: HttpRequest):
