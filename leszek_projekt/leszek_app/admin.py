@@ -3,7 +3,9 @@ from django.http import HttpRequest
 from django.db.models import QuerySet
 
 # Register your models here.
-from .models import Code , Question, QuestionApplication
+from .models import Code, Question, QuestionApplication
+
+# TODO: Add import button
 
 admin.site.register([Code])
 

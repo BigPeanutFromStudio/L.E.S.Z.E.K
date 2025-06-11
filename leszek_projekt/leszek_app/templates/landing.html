@@ -57,9 +57,9 @@
           <div class="center">{% bs_icon 'clock' size="1.5rem" %} <span><select id="" class="unselectable" disabled><option value="">40 min</option></select></span></div>
         </div>
         {% if user.is_authenticated %}
-          <button class="btn-exam" onclick="goTo('/exam?code={{classification_name}}')">Redaguj egzamin</button>
+          <button class="btn-exam" onclick="goTo('/application_form/{{classification_name}}')">Redaguj egzamin</button>
         {% else %}
-          <button class="btn-exam" onclick="goTo('/application_form/{{classification_name}}')">Rozpocznij egzamin</button>
+          <button class="btn-exam" onclick="goTo('/exam?code={{classification_name}}')">Rozpocznij egzamin</button>
         {% endif %}
       </div>
       {% endfor %}
