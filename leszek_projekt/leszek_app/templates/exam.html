@@ -6,10 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'exam.css' %}" />
     <title>Document</title>
+    {% csrf_token %}
+    <script>
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+      } else if (localStorage.getItem('darkMode') === 'false') {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
     <script>
       var currentQuestionIndex = 0;
       const markers = [];
       var questions = getData();
+      var testTime = 40 * 60;
 
       function generateMarkers() {
         const markerParent = document.getElementById(
@@ -61,6 +70,18 @@
       function startExam() {
         console.log(questions);
         displayQuestion();
+        window.setInterval(() => {
+          testTime--;
+          if (testTime <= 0) {
+            window.onbeforeunload = function () {};
+            endExam();
+          }
+          let timeMinutes = Math.floor(testTime / 60);
+          let timeSeconds = testTime - timeMinutes * 60;
+          document.getElementById(
+            'exam_timer_text'
+          ).textContent = `${timeMinutes}:${timeSeconds}`;
+        }, 1000);
       }
 
       function saveCurrentQuestion() {
@@ -73,6 +94,10 @@
         ).value;
 
         questions[currentQuestionIndex].selected_answer = answer;
+        const answerLabels = document.querySelectorAll('.wrapper');
+        answerLabels.forEach(function (l) {
+          l.classList.remove('active');
+        });
         document.getElementById('answer_A').checked = false;
         document.getElementById('answer_B').checked = false;
         document.getElementById('answer_C').checked = false;
@@ -102,16 +127,10 @@
       }
 
       async function endExam() {
-        saveQuestion();
-        const questionsToSend = Object.fromEntries(
-          globalQuestions.map((question) => [
-            question.id,
-            question.selected_answer,
-          ])
-        );
+        saveCurrentQuestion();
         // DEBUG
         console.log('Wysłano pytnia:');
-        console.log(questionsToSend);
+        console.log(questions);
         let headers = new Headers();
         // add header from cookie
         const csrftoken = document.cookie
@@ -122,7 +141,7 @@
         headers.append('X-CSRFToken', csrftoken);
         const response = await fetch('/results', {
           method: 'POST',
-          body: JSON.stringify({ questions: questionsToSend }),
+          body: JSON.stringify({ questions: questions }),
           credentials: 'same-origin',
           headers: headers,
         });
@@ -147,6 +166,23 @@
       });
     </script>
     <script>
+      const answerLabels = undefined;
+      document.addEventListener('DOMContentLoaded', function () {
+        const answerLabels = document.querySelectorAll('.wrapper');
+        answerLabels.forEach((label) => {
+          label.addEventListener('click', function () {
+            console.log('Clicked label:', this);
+
+            // Remove 'active' class from all labels
+            answerLabels.forEach(function (l) {
+              l.classList.remove('active');
+            });
+
+            // Add 'active' class to the clicked label
+            this.classList.add('active');
+          });
+        });
+      });
       window.onbeforeunload = function () {
         return 'Jesteś pewien? Utracisz dotychczasowy postęp, a egzamin wygeneruje się na nowo. ';
       };
@@ -156,7 +192,10 @@
     <div class="container">
       <div class="exam_header">
         <p id="exam_name">Egzamin {{examCode}}</p>
-        <div class="exam_timer">{%bs_icon 'stopwatch' size="1em"%}40:00</div>
+        <div class="exam_timer">
+          <div id="exam_timer_icon">{%bs_icon 'stopwatch' size="1em" %}</div>
+          <span id="exam_timer_text">40:00</span>
+        </div>
       </div>
       <div class="questions_markers">
         <p id="current_question"></p>

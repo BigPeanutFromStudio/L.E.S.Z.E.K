@@ -20,7 +20,6 @@ def aprove_application(self: admin.ModelAdmin, request: HttpRequest, queryset):
 
 
 @admin.register(Question)
-# TODO: change names to polish
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'code_id', 'media', 'question')
     search_fields = ('question', 'answer_a', 'answer_b', 'answer_c', 'answer_d')

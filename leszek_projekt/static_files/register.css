@@ -14,17 +14,17 @@ body {
 }
 
 .form-content {
-  background-color: var(--primary-color);
+  background-color: var(--on-background-color);
   padding: 50px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px 0px #00000040;
 }
 
 h1 {
-  color: var(--secondary-color);
+  color: var(--dark-text);
   margin-bottom: 20px;
   text-align: center;
-  font-size: var(--xlarge-text);
+  font-size: var(--header-text);
 }
 
 label {
@@ -45,13 +45,13 @@ input[type='password'] {
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--primary-color);
   border-radius: 4px;
   font-size: var(--medium-text);
 }
 button {
-  background-color: var(--secondary-color);
-  color: var(--text-color);
+  background-color: var(--primary-color);
+  color: var(--light-text);
   padding: 10px 20px;
   border: none;
   border-radius: 4px;

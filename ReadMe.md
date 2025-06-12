@@ -1,10 +1,5 @@
 # Welcome to L.E.S.Z.E.K (Losowy Egzaminator Szkolny Z Egzaminów Klasyfikacyjnych)
 
-## TODO
-
-- [ ] Aplikacje pytań powinny być usuwane jeśli aplikacja dotycząca tego samego pytania została zaakceptowana
-- [ ] Odpowiedzi na pytanie nie zmieniaja się po przejściu do następnego -> brak znalezionej metody powtórzenia błędu
-
 ## Przygotowanie
 
 Aby system działał należy zainstalować pythona w wersji przynajmniej 3.13.1 oraz bibliotekę _Django_.

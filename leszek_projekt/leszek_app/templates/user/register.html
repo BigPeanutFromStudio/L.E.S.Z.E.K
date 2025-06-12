@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="{% static 'register.css' %}" />
     <title>Document</title>
   </head>
+  <script>
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark');
+    } else if (localStorage.getItem('darkMode') === 'false') {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
   <body>
     <div class="content">
       <div class="form-content">

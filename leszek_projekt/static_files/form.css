@@ -1,0 +1,114 @@
+.container {
+  padding: 50px;
+  gap: 15px;
+  display: flex;
+  flex-direction: column;
+}
+.exam_content {
+  width: 90vw;
+  width: -webkit-fill-available;
+  height: 700px;
+  background-color: var(--on-background-color);
+  margin: auto auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 12px 0px #00000040;
+}
+#question-text {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  font-size: var(--paragraph-text);
+  padding: 10px 0;
+}
+.active {
+  background-color: var(--secondary-color) !important;
+  box-shadow: none !important;
+}
+.active p {
+  color: var(--light-text) !important;
+}
+
+
+.wrapper {
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  align-items: center;
+  background-color: var(--on-on-background-color, var(--on-background-color));
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--box-shadow,none);
+  height: 100%;
+  gap: 15px;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.wrapper:hover {
+  transform: scale(1.01);
+
+  background-color: color-mix(
+    in srgb,
+    var(--secondary-color),
+    rgba(0, 0, 0, 0.25)
+  );
+}
+
+/* Hide the browser's default radio button */
+.wrapper input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  height: 25px;
+  width: 25px;
+  padding: 5px;
+  border: 2px solid var(--secondary-color);
+  border-radius: 50%;
+  text-align: center;
+  display: block;
+}
+
+/* On mouse-over, add a grey background color */
+.wrapper:hover input ~ .checkmark {
+  background-color: color-mix(
+    in srgb,
+    var(--primary-color),
+    rgba(0, 0, 0, 0.25)
+  );
+  border: none;
+}
+
+
+/* When the radio button is checked, add a blue background */
+.wrapper input:checked ~ .checkmark {
+  background-color: var(--primary-color);
+  color: var(--light-text) !important;
+}
+
+
+.wrapper .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.answers {
+  margin-top: 20px;
+}

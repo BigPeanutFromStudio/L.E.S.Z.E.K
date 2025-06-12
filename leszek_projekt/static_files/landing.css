@@ -11,7 +11,7 @@ body {
 }
 
 header {
-  background-color: var(--background-color);
+  background-color: var(--header);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -19,6 +19,7 @@ header {
   height: 120px;
   box-shadow: 0px 4px 4px 0px #00000040;
   margin-bottom: 40px;
+  padding: 0px 10px;
 }
 
 .wrapper {
@@ -153,16 +154,17 @@ a {
   transform: scale(1.05);
 }
 
-#questions_in_exam {
+.questions_in_exam {
   background-color: var(--secondary-color);
   border-radius: 5px;
   padding: 5px;
   border: unset;
   transition: ease 0.1s transform;
   cursor: pointer;
+  color: var(--dark-text);
 }
 
-#questions_in_exam:hover {
+.questions_in_exam:hover {
   transform: scale(1.05);
 }
 
@@ -176,4 +178,8 @@ a {
 }
 #logout-form {
   display: inline;
+}
+
+select{
+  color: var(--light-text);
 }

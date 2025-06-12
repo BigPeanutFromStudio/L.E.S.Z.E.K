@@ -1,130 +1,41 @@
 @import url(root.css);
+@import url(form.css);
 
 body {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
   background-color: var(--background-color);
-  margin: 0; /* Added to ensure no default body margin */
-  font-family: sans-serif; /* Added a default font */
 }
 
-.container {
-  position: relative;
-  width: 80vw;
-  height: 85vh;
-  background-color: var(--primary-color);
-  margin: auto auto;
-  padding: 20px;
-  border-radius: 15px;
-  box-sizing: border-box; /* Added for better layout control */
-}
 
-.exam_content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-self: center;
-  height: 80%;
-  color: var(--text-color);
-}
-
-#current_question {
-  font-size: var(--medium-text);
-}
-
-.answers {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(250px, auto));
-  justify-content: center;
-  gap: 25px;
-  row-gap: 35px;
-  margin-top: 20px; /* Added some margin */
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: row;
-  /* justify-items: center; /* Not a valid property, use align-items or justify-content on parent */
-  align-items: center;
-  gap: 20px;
-  background-color: var(--secondary-color);
-  padding: 10px;
-  border-radius: 15px;
-  box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
-  height: 100%;
-}
-
-label {
-  /* General label styling */
-  font-size: var(--medium-text);
-  cursor: pointer;
-  user-select: none;
-}
-
-input[type='radio'] {
-  cursor: pointer;
-  margin-right: 5px; /* Added some spacing */
-}
-
-.helper_label {
-  /* This is the main clickable label container */
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-.helper_label:hover {
+#nextQuestion:hover {
   transform: scale(1.07);
-}
-
-#question-text {
-  display: flex;
-  flex-direction: column;
-  /* justify-items: center; /* Not valid, use align-items */
-  align-items: center;
-  text-align: center; /* Added for better text centering */
-  font-size: var(--large-text);
-  margin-bottom: 20px; /* Added some margin */
-}
-
-video,
-img {
-  max-width: 50vw;
-  max-height: 30vh; /* Added max-height to prevent large media from breaking layout */
-  object-fit: contain; /* Ensures media scales nicely */
-}
-
-#media {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
 }
 
 .button-container {
-  position: relative; /* Changed to relative for simpler positioning within flow or absolute to parent */
-  height: 20%; /* This might be too large if other content pushes it */
-  width: 100%;
-  display: flex; /* Added for easier button positioning */
-  justify-content: flex-end; /* Aligns button to the right */
-  align-items: center; /* Vertically centers button in the allocated space */
-  padding-top: 20px; /* Added some space above buttons */
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 }
 
-.button-container button {
-  /* General button styling */
+
+#nextQuestion {
   border: none;
-  background-color: var(--secondary-color);
-  padding: 10px 20px; /* Adjusted padding */
-  border-radius: 15px;
+  padding: 10px;
   transition: transform 0.1s ease;
+
   cursor: pointer;
-  box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
+  box-shadow: 0px 4px 12px 0px #00000040;
   font-size: var(--medium-text);
-  color: var(--text-color);
-  /* Removed absolute positioning to let flexbox handle it */
+  border-radius: 8px;
+
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  width: 230px;
 }
-.button-container button:hover {
-  transform: scale(1.07);
+
+h1 {
+  text-align: center;
+  font-size: var(--title-text);
 }
 
 /* Removed specific #endExam button as it's covered by general button style now

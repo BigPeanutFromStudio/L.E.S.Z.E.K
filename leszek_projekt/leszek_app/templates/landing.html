@@ -6,7 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'landing.css' %}" />
     <title>L.E.S.Z.E.K</title>
+    <script type="module" src="{% static dark_mode.js %}" ></script>
     <script type="text/javascript">
+
+      function setCSSVariables(){
+        if (localStorage.getItem('darkMode') === 'true') {
+          document.documentElement.classList.add('dark');
+        }else if (localStorage.getItem('darkMode') === 'false') {
+          document.documentElement.classList.remove('dark');
+        }
+
+      }
+
+      if(!localStorage.getItem('darkMode')){
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          localStorage.setItem('darkMode', 'true')
+        }else{
+          localStorage.setItem('darkMode', 'false')
+        }
+      }
+
       function goToExam(classificationName) {
         const currentUrl = window.location.href;
         window.open(`/exam?code=${classificationName}`);
@@ -20,6 +39,11 @@
         const currentUrl = window.location.href;
         window.open(link)
       }
+      function toggleDarkMode(){
+        localStorage.setItem('darkMode', localStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
+        setCSSVariables();
+      }
+      setCSSVariables();
     </script>
   </head>
   <body>
@@ -27,7 +51,7 @@
       <h1>Platforma egzaminacyjna ZSA-T</h1>
       <div class="wrapper">
       <div class="btn_mock_cke" onclick="goTo('https://www.cke.gov.pl')"> {% bs_icon 'box-arrow-up-right' size="1.5rem"%} <div>Testowa strona CKE</div></div>
-            <div class="switch" id="theme-switch">
+            <div class="switch" id="theme-switch" onclick="toggleDarkMode()">
         {%bs_icon 'brightness-high' size="2rem"%}
       </div>
       {% if user.is_authenticated %}
@@ -53,8 +77,9 @@
         <h2>{{classification_name}}</h2>
         <div class="quantity_display">{{quantity}}</div>
         <div class="extra">
-          <div class="center">{% bs_icon 'file-earmark-text' size="1.5rem" %} <select name="questions_in_exam" id="questions_in_exam"><option value="40">40 pytań</option><option value="20">20 pytań</option></select></div>
-          <div class="center">{% bs_icon 'clock' size="1.5rem" %} <span><select id="" class="unselectable" disabled><option value="">40 min</option></select></span></div>
+          {% comment %} TODO: functionality for 20 questions {% endcomment %}
+          <div class="center">{% bs_icon 'file-earmark-text' size="1.5rem" %} <select name="questions_in_exam" class="questions_in_exam"><option value="40">40 pytań</option><option value="20">20 pytań</option></select></div>
+          <div class="center">{% bs_icon 'clock' size="1.5rem" %} <span><select class="unselectable" disabled><option value="">40 min</option></select></span></div>
         </div>
         {% if user.is_authenticated %}
           <button class="btn-exam" onclick="goTo('/application_form/{{classification_name}}')">Redaguj egzamin</button>

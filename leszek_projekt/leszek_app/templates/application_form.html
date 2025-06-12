@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="{% static 'application_form.css' %}" />
     <title>Document</title>
     <script>
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+      } else if (localStorage.getItem('darkMode') === 'false') {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+    <script>
       // TOAST.JS (your version)
       const FADE_DUR = 100;
       const DISPLAY_DUR = 1000;
@@ -64,25 +71,37 @@
       }
 
       function showQuestion(question) {
-        document.getElementById('question-text').innerHTML = '';
-        document.getElementById(
-          'question-text'
-        ).innerHTML = `<p>${question['question']}</p>`;
-        let media = question['media'];
-        if (media != '' && media != null) {
-          if (media.split('.')[1] == 'mp4') {
-            document.getElementById(
-              'question-text'
-            ).innerHTML += `<div id='media'><video controls><source src="{% get_static_prefix %}media/${media}" type="video/mp4"></source></video></div>`;
-          } else {
-            document.getElementById(
-              'question-text'
-            ).innerHTML += `<div id='media'><img src="{% get_static_prefix %}media/${media}"  alt="Zdjęcie do zadania"></div>`;
-          }
+        let currentQuestion = question;
+
+        console.log(currentQuestion);
+
+        document.getElementById('question-text').textContent =
+          currentQuestion.question;
+
+        document.getElementById('label_A').textContent =
+          currentQuestion.answer_a;
+        document.getElementById('answer_A').value = currentQuestion.answer_a;
+        document.getElementById('label_B').textContent =
+          currentQuestion.answer_b;
+        document.getElementById('answer_B').value = currentQuestion.answer_b;
+        document.getElementById('label_C').textContent =
+          currentQuestion.answer_c;
+        document.getElementById('answer_C').value = currentQuestion.answer_c;
+        document.getElementById('label_D').textContent =
+          currentQuestion.answer_d;
+        document.getElementById('answer_D').value = currentQuestion.answer_d;
+
+        if (currentQuestion.selected_answer !== '') {
+          document.getElementsByName('answers').forEach((ele) => {
+            if (ele.value === currentQuestion.selected_answer) {
+              ele.checked = true;
+            }
+          });
         }
       }
 
-      async function endExam() {
+      async function sendAnswer() {
+        document.getElementById('nextQuestion').disabled = true;
         try {
           const questionToSend = {
             ...globalQuestion,
@@ -107,73 +126,79 @@
           showToast('Odpowiedź została przesłana', 'success', 0);
           setTimeout(() => {
             location.reload();
+            document.getElementById('nextQuestion').disabled = false;
           }, FADE_DUR + DISPLAY_DUR);
         } catch (error) {
           showToast('Wystąpił błąd: ' + error, 'failure', 1500);
+          document.getElementById('nextQuestion').disabled = false;
         }
       }
 
       document.addEventListener('DOMContentLoaded', function () {
         startExam();
       });
+      const answerLabels = undefined;
+      document.addEventListener('DOMContentLoaded', function () {
+        const answerLabels = document.querySelectorAll('.wrapper');
+        answerLabels.forEach((label) => {
+          label.addEventListener('click', function () {
+            console.log('Clicked label:', this);
+
+            // Remove 'active' class from all labels
+            answerLabels.forEach(function (l) {
+              l.classList.remove('active');
+            });
+
+            // Add 'active' class to the clicked label
+            this.classList.add('active');
+          });
+        });
+      });
     </script>
   </head>
 
   <body>
     <div class="container">
+      <h1>Pytania z {{code|safe}}</h1>
       <div class="exam_content">
-        <p id="current_question"></p>
-        <div id="question-text"></div>
+        <p id="question-text"></p>
         <div class="answers">
-          <label for="answer_A" class="helper_label">
-            <div class="wrapper">
-              <input
-                type="radio"
-                name="answers"
-                id="answer_A"
-                required
-                value="{{question.answer_a}}"
-              />
-              <label for="answer_A" id="label_A">{{question.answer_a}}</label>
+          <label for="answer_A" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_A" required />
+              <div class="checkmark">A</div>
             </div>
+            <p id="label_A"></p>
           </label>
-          <label for="answer_B" class="helper_label">
-            <div class="wrapper">
-              <input
-                type="radio"
-                name="answers"
-                id="answer_B"
-                value="{{question.answer_b}}"
-              />
-              <label for="answer_B" id="label_B">{{question.answer_b}}</label>
+          <label for="answer_B" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_B" required />
+              <div class="checkmark">B</div>
             </div>
+            <p id="label_B"></p>
           </label>
-          <label for="answer_C" class="helper_label">
-            <div class="wrapper">
-              <input
-                type="radio"
-                name="answers"
-                id="answer_C"
-                value="{{question.answer_c}}"
-              />
-              <label for="answer_C" id="label_C">{{question.answer_c}}</label>
+          <label for="answer_C" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_C" required />
+              <div class="checkmark">C</div>
             </div>
+            <p id="label_C"></p>
           </label>
-          <label for="answer_D" class="helper_label">
-            <div class="wrapper">
-              <input
-                type="radio"
-                name="answers"
-                id="answer_D"
-                value="{{question.answer_d}}"
-              />
-              <label for="answer_D" id="label_D">{{question.answer_d}}</label>
-            </div></label
-          >
+          <label for="answer_D" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_D" required />
+              <div class="checkmark">D</div>
+            </div>
+            <p id="label_D"></p>
+          </label>
         </div>
       </div>
       <div class="button-container">
-        <button onclick="endExam()" id="nextQuestion">
+        <button onclick="sendAnswer()" id="nextQuestion">
           Prześlij odpowiedź
         </button>
       </div>

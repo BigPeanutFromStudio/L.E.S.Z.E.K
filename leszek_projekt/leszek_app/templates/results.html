@@ -7,8 +7,16 @@
     <link rel="stylesheet" href="{% static 'results.css' %}" />
     <title>Wyniki</title>
     <script>
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark');
+      } else if (localStorage.getItem('darkMode') === 'false') {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+    <script>
       // Whoever is working on this code, I'm sorry
-      function createDiv(question, answers, correctanswer, selected_answer) {
+      function createDiv(question, answers, correct_answer, selected_answer) {
+        const letters = ['A', 'B', 'C', 'D'];
         const div = document.createElement('div');
         div.setAttribute('class', 'question');
         const text = document.createTextNode(question);
@@ -18,14 +26,30 @@
         div.appendChild(p);
         const answersDiv = document.createElement('div');
         answersDiv.classList.add('answers');
-        answers.forEach((answer) => {
+        answers.forEach((answer, index) => {
           const answerDiv = document.createElement('div');
+          const checkmarkDiv = document.createElement('div');
+          checkmarkDiv.classList.add('checkmark');
+          checkmarkDiv.textContent = letters[index];
+          const checkColor =
+            answer === selected_answer && answer === correct_answer
+              ? 'var(--greener)'
+              : answer === selected_answer
+              ? 'var(--redder)'
+              : '';
+          if (answer === selected_answer) {
+            checkmarkDiv.style.border = 'none';
+          }
+          checkmarkDiv.style.backgroundColor = checkColor;
+          answerDiv.appendChild(checkmarkDiv);
           const text = document.createTextNode(answer);
           answerDiv.appendChild(text);
           const color =
-            answer === correctanswer ? 'var(--green)' : 'var(--red)';
+            answer === correct_answer ? 'var(--green)' : 'var(--red)';
           answerDiv.style.backgroundColor =
-            answer === selected_answer || answer === correctanswer ? color : '';
+            answer === selected_answer || answer === correct_answer
+              ? color
+              : '';
           answerDiv.setAttribute('class', 'answer');
           answersDiv.appendChild(answerDiv);
         });
@@ -38,6 +62,8 @@
       function getData() {
         const json = `{{ results|safe }}`;
         const data = JSON.parse(json);
+        console.log(data);
+
         if (data.msg === 'Success') {
           console.log(data.questions);
           document.getElementById('score').innerText =
@@ -45,15 +71,15 @@
           document.getElementById('date').innerText = data.date;
           data.questions.forEach((question) => {
             createDiv(
-              question.fields.question,
+              question.question,
               [
-                question.fields.answer_a,
-                question.fields.answer_b,
-                question.fields.answer_c,
-                question.fields.answer_d,
+                question.answer_a,
+                question.answer_b,
+                question.answer_c,
+                question.answer_d,
               ],
-              question.fields.correct_answer,
-              question.fields.selected_answer
+              question.correct_answer,
+              question.selected_answer
             );
           });
         } else {

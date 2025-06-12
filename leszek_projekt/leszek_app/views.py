@@ -10,25 +10,30 @@ from django.http.response import HttpResponse, JsonResponse
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
+# TODO: fix loading time
+# TODO: custom 404
+# TODO: Easter eggs
 def landing(request: HttpRequest):
     classifications = Code.objects.all()
     classifications_quantities = {}
+    questions = Question.objects.all().prefetch_related()
     for c in classifications:
-        classifications_quantities[c.code_name] = Question.objects.filter(code_id=c).count()
+        classifications_quantities[c.code_name] = questions.filter(code_id=c).count()
     # question_quantities = Question.objects.values('code_id__code_name').annotate(count=Count('code_id'))
     # print(list(Question.objects.values('code_id__code_name').annotate(count=Count('code_id'))))
     # print(classifications_quantities)  # Debugging
     context = {"classifications": classifications_quantities}
     return render(request, "landing.html", context)
 
-
+@csrf_exempt
 def exam(request: HttpRequest):
     examCode = request.GET.get("code")
     count = Question.objects.filter(code_id=Code.objects.get(code_name=examCode)).count()
+    questions = []
     if count:
-        questions = []
         numbers = sample(range(1, count + 1), 40)
         for n in numbers:
             questions.append(Question.objects.get(id=n).prepare())
@@ -40,16 +45,14 @@ def exam(request: HttpRequest):
 def postExamResults(request: HttpRequest):
     questions = loads(request.body)["questions"]
     score = 0
-    questionsList = []
-    for questionIndex in questions:
-      currentQuestion = Question.objects.filter(id=questionIndex)
-      currentQuestion = loads(serialize("json", currentQuestion))[0]
-      currentQuestion['fields']['selected_answer'] = questions[questionIndex] 
-      if(questions[questionIndex] == currentQuestion['fields']['correct_answer']):
+    for i, question in enumerate(questions):
+        correct_answer = Question.objects.filter(id=question["id"]).values("correct_answer")[0]["correct_answer"]
+        questions[i]["correct_answer"] = correct_answer
+        if question["selected_answer"] == correct_answer: 
           score += 1
-      questionsList.append(currentQuestion)
+        
     request.session['score'] = score
-    request.session['questions'] = questionsList
+    request.session['questions'] = questions
     request.session['date'] = datetime.now().strftime("%d/%m/%Y %H:%M")
 
 
