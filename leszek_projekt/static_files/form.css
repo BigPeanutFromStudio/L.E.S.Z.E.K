@@ -7,7 +7,7 @@
 .exam_content {
   width: 90vw;
   width: -webkit-fill-available;
-  height: 700px;
+  height: fit-content;
   background-color: var(--on-background-color);
   margin: auto auto;
   padding: 20px;
@@ -110,5 +110,5 @@
 }
 
 .answers {
-  margin-top: 20px;
+  margin: 20px 0px;
 }

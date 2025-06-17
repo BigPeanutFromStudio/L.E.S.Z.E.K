@@ -4,8 +4,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "header_base.html" %}
     <link rel="stylesheet" href="{% static 'application_form.css' %}" />
-    <title>Document</title>
+    <title>Redagowanie pytań do egzaminu {{examCode}}</title>
     <script>
       if (localStorage.getItem('darkMode') === 'true') {
         document.documentElement.classList.add('dark');

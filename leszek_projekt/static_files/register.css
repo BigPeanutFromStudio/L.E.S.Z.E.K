@@ -75,3 +75,7 @@ p {
 a {
   color: var(--secondary-color);
 }
+
+input {
+  color: #040316;
+}

@@ -13,8 +13,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-# TODO: fix loading time
-# TODO: custom 404
 # TODO: Easter eggs
 def landing(request: HttpRequest):
     classifications = Code.objects.all()
@@ -31,14 +29,18 @@ def landing(request: HttpRequest):
 @csrf_exempt
 def exam(request: HttpRequest):
     examCode = request.GET.get("code")
-    count = Question.objects.filter(code_id=Code.objects.get(code_name=examCode)).count()
-    questions = []
-    if count:
-        numbers = sample(range(1, count + 1), 40)
-        for n in numbers:
-            questions.append(Question.objects.get(id=n).prepare())
+    numberOfQuestions = int(request.GET.get("nr"))
+    numberOfQuestions = max(1, min(40, numberOfQuestions))
+    questions = list(map(lambda q: q.prepare(), Question.objects.all().order_by("?")[:numberOfQuestions]))
+    # count = Question.objects.filter(code_id=Code.objects.get(code_name=examCode)).count()
+    # questions = []
+    # if count:
+    #     numbers = sample(range(1, count + 1), numberOfQuestions)
+    #     for n in numbers:
+    #         questions.append(Question.objects.get(id=n).prepare())
     
-    context = {"examCode": examCode, "questions": dumps(questions)}
+    context = {"examCode": examCode, "questions": dumps(questions), "numberOfQuestions": numberOfQuestions}
+    print(context)
     return render(request, "exam.html", context)
 
 

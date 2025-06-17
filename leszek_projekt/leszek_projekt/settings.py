@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,13 +25,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^rj44l=-jigng(wcuzigyzgvh%0ydk^a7z^1__jm2t&fwtgolf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True 
 
 ALLOWED_HOSTS = []
 
 # Application definition
 
 INSTALLED_APPS = [
+
+    "unfold",  
+    "unfold.contrib.filters",  
+    "unfold.contrib.forms",  
+    "unfold.contrib.inlines",  
+    "unfold.contrib.guardian", 
+    "unfold.contrib.simple_history",  
+    "unfold.contrib.import_export",
+    'import_export',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'leszek_app',
-    'django_bootstrap_icons'
+    'django_bootstrap_icons',
+
 ]
 
 MIDDLEWARE = [
@@ -56,7 +68,7 @@ ROOT_URLCONF = 'leszek_projekt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,3 +145,23 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+UNFOLD = {
+    "STYLES": [
+        lambda _: static("admin.css"),
+    ],
+    "COLORS": {
+        "base": {
+            "500": "72, 166, 167",
+            "600": "0, 106, 113",
+            "700": "0, 106, 113",
+        },
+        "primary":{
+            "500" : "72, 166, 167",
+            "600": "0, 106, 113",
+            "700": "0, 106, 113",
+            "900": "0,72,77",
+        }
+    }
+}

@@ -4,6 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "header_base.html" %}
     <link rel="stylesheet" href="{% static 'results.css' %}" />
     <title>Wyniki</title>
     <script>
@@ -67,7 +68,7 @@
         if (data.msg === 'Success') {
           console.log(data.questions);
           document.getElementById('score').innerText =
-            'Wynik: ' + data.score + '/40';
+            'Wynik: ' + data.score + `/${data.questions.length}`;
           document.getElementById('date').innerText = data.date;
           data.questions.forEach((question) => {
             createDiv(

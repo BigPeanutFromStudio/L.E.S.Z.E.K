@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'landing.css' %}" />
+    {% include "header_base.html" %}
     <title>L.E.S.Z.E.K</title>
     <script type="module" src="{% static dark_mode.js %}" ></script>
     <script type="text/javascript">
@@ -27,17 +28,13 @@
       }
 
       function goToExam(classificationName) {
+        let numberOfQuestions = document.getElementById(classificationName).value;
         const currentUrl = window.location.href;
-        window.open(`/exam?code=${classificationName}`);
+        window.open(`/exam?code=${classificationName}&nr=${numberOfQuestions}`);
       }
       function editExam(classificationName){
         const currentUrl = window.location.href;
-        window.open(`/application_form/${classification_name}`)
-
-      }
-      function goTo(link){
-        const currentUrl = window.location.href;
-        window.open(link)
+        window.open(`/application_form/${classificationName}`)
       }
       function toggleDarkMode(){
         localStorage.setItem('darkMode', localStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
@@ -77,14 +74,13 @@
         <h2>{{classification_name}}</h2>
         <div class="quantity_display">{{quantity}}</div>
         <div class="extra">
-          {% comment %} TODO: functionality for 20 questions {% endcomment %}
-          <div class="center">{% bs_icon 'file-earmark-text' size="1.5rem" %} <select name="questions_in_exam" class="questions_in_exam"><option value="40">40 pytań</option><option value="20">20 pytań</option></select></div>
+          <div class="center">{% bs_icon 'file-earmark-text' size="1.5rem" %} <select name="questions_in_exam" class="questions_in_exam" id="{{classification_name}}"><option value="40">40 pytań</option><option value="20">20 pytań</option></select></div>
           <div class="center">{% bs_icon 'clock' size="1.5rem" %} <span><select class="unselectable" disabled><option value="">40 min</option></select></span></div>
         </div>
         {% if user.is_authenticated %}
-          <button class="btn-exam" onclick="goTo('/application_form/{{classification_name}}')">Redaguj egzamin</button>
+          <button class="btn-exam" onclick="editExam('{{classification_name}}')">Redaguj egzamin</button>
         {% else %}
-          <button class="btn-exam" onclick="goTo('/exam?code={{classification_name}}')">Rozpocznij egzamin</button>
+          <button class="btn-exam" onclick="goToExam('{{classification_name}}')">Rozpocznij egzamin</button>
         {% endif %}
       </div>
       {% endfor %}

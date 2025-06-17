@@ -4,8 +4,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "header_base.html" %}
     <link rel="stylesheet" href="{% static 'exam.css' %}" />
-    <title>Document</title>
+    <title>Egzamin {{examCode}}</title>
     {% csrf_token %}
     <script>
       if (localStorage.getItem('darkMode') === 'true') {
@@ -14,9 +15,11 @@
         document.documentElement.classList.remove('dark');
       }
     </script>
+    {{ questions|json_script:"questions_safe" }}
     <script>
       var currentQuestionIndex = 0;
       const markers = [];
+      const numberOfQuestions = '{{numberOfQuestions}}';
       var questions = getData();
       var testTime = 40 * 60;
 
@@ -40,7 +43,7 @@
 
         document.getElementById('current_question').textContent = `Pytanie ${
           currentQuestionIndex + 1
-        } z 40`;
+        } z ${numberOfQuestions}`;
 
         document.getElementById('question-text').textContent =
           currentQuestion.question;
@@ -57,6 +60,22 @@
         document.getElementById('label_D').textContent =
           currentQuestion.answer_d;
         document.getElementById('answer_D').value = currentQuestion.answer_d;
+
+        document.getElementById('question-media').innerHTML = '';
+
+        let mediaObject = null;
+
+        if (currentQuestion.media) {
+          mediaObject =
+            currentQuestion.media.split('.')[1] === 'mp4'
+              ? document.createElement('video')
+              : document.createElement('img');
+          mediaObject.setAttribute(
+            'src',
+            `{% static 'media/${currentQuestion.media}' %}`
+          );
+          document.getElementById('question-media').appendChild(mediaObject);
+        }
 
         if (currentQuestion.selected_answer !== '') {
           document.getElementsByName('answers').forEach((ele) => {
@@ -78,6 +97,8 @@
           }
           let timeMinutes = Math.floor(testTime / 60);
           let timeSeconds = testTime - timeMinutes * 60;
+          timeSeconds =
+            timeSeconds.toString().length > 1 ? timeSeconds : '0' + timeSeconds;
           document.getElementById(
             'exam_timer_text'
           ).textContent = `${timeMinutes}:${timeSeconds}`;
@@ -150,7 +171,7 @@
 
       function getData() {
         const questionsObject = [];
-        const questions = JSON.parse('{{ questions|safe }}');
+        const questions = JSON.parse('{{ questions|escapejs}}');
         questions.forEach((question) => {
           questionsObject.push({
             ...question,
@@ -203,6 +224,7 @@
       </div>
       <div class="exam_content">
         <p id="question-text"></p>
+        <div id="question-media"></div>
         <div class="answers">
           <label for="answer_A" class="wrapper">
             {% comment %} content here {% endcomment %}

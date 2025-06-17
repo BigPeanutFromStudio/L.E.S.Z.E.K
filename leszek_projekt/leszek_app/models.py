@@ -20,7 +20,7 @@ class Question(models.Model):
     code_id = models.ForeignKey(Code,on_delete=models.DO_NOTHING)
     
     class Meta:
-        unique_together = ('question', 'media', 'code_id')
+        unique_together = ('question', 'answer_a', 'answer_b', 'answer_c', 'answer_d', 'code_id')
     def __str__(self):
         mediaRef = None
         if self.media:
@@ -41,9 +41,9 @@ class Question(models.Model):
         }
 
 class QuestionApplication(models.Model):
-    question_id = models.ForeignKey(Question,on_delete=models.DO_NOTHING)
+    question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
     correct_answer = models.CharField(max_length=5000)
-    user_id = models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     sent_at = models.DateTimeField()
     def __str__(self):
         return f'{self.question_id.code_id} - {self.question_id.question}'

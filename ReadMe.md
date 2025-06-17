@@ -1,5 +1,7 @@
 # Welcome to L.E.S.Z.E.K (Losowy Egzaminator Szkolny Z Egzaminów Klasyfikacyjnych)
 
+## Omówienie
+
 ## Przygotowanie
 
 Aby system działał należy zainstalować pythona w wersji przynajmniej 3.13.1 oraz bibliotekę _Django_.
@@ -75,3 +77,5 @@ $ py manage.py loaddata .\import_data\questions_export.json
 ```
 
 3. Do folderu "leszek_projekt\static_files\media" przenieś wszystkie pliki otrzymane po użyciu A.S.P.E.K.T (powinny znajdować się w folderze "media")
+
+## Contribution guide
