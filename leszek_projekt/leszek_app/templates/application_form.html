@@ -4,16 +4,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% include "header_base.html" %}
+    {% include "template_base.html" %}
     <link rel="stylesheet" href="{% static 'application_form.css' %}" />
     <title>Redagowanie pytań do egzaminu {{examCode}}</title>
-    <script>
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.documentElement.classList.add('dark');
-      } else if (localStorage.getItem('darkMode') === 'false') {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
     <script>
       // TOAST.JS (your version)
       const FADE_DUR = 100;
@@ -71,26 +64,49 @@
         showQuestion(question);
       }
 
+      function imageOrTxt(p_label_id, questionContent) {
+        if (/\.(png|jpg|mp4)$/i.test(questionContent)) {
+          document.getElementById(
+            p_label_id
+          ).innerHTML = `<img src="{% get_static_prefix %}media/${questionContent}" alt="">`;
+        } else {
+          document.getElementById(p_label_id).innerHTML = questionContent;
+        }
+      }
+
       function showQuestion(question) {
         let currentQuestion = question;
-
-        console.log(currentQuestion);
 
         document.getElementById('question-text').textContent =
           currentQuestion.question;
 
-        document.getElementById('label_A').textContent =
-          currentQuestion.answer_a;
+        imageOrTxt('label_A', currentQuestion.answer_a);
         document.getElementById('answer_A').value = currentQuestion.answer_a;
-        document.getElementById('label_B').textContent =
-          currentQuestion.answer_b;
+        imageOrTxt('label_B', currentQuestion.answer_b);
         document.getElementById('answer_B').value = currentQuestion.answer_b;
-        document.getElementById('label_C').textContent =
-          currentQuestion.answer_c;
+        imageOrTxt('label_C', currentQuestion.answer_c);
         document.getElementById('answer_C').value = currentQuestion.answer_c;
-        document.getElementById('label_D').textContent =
-          currentQuestion.answer_d;
+        imageOrTxt('label_D', currentQuestion.answer_d);
         document.getElementById('answer_D').value = currentQuestion.answer_d;
+
+        document.getElementById('question-media').innerHTML = '';
+
+        let mediaObject = null;
+
+        if (currentQuestion.media) {
+          mediaObject =
+            currentQuestion.media.split('.')[1] === 'mp4'
+              ? document.createElement('video')
+              : document.createElement('img');
+          mediaObject.setAttribute(
+            'src',
+            `{% get_static_prefix %}media/${currentQuestion.media}`
+          );
+          if (mediaObject.tagName === 'VIDEO') {
+            mediaObject.setAttribute('controls', '');
+          }
+          document.getElementById('question-media').appendChild(mediaObject);
+        }
 
         if (currentQuestion.selected_answer !== '') {
           document.getElementsByName('answers').forEach((ele) => {
@@ -143,8 +159,6 @@
         const answerLabels = document.querySelectorAll('.wrapper');
         answerLabels.forEach((label) => {
           label.addEventListener('click', function () {
-            console.log('Clicked label:', this);
-
             // Remove 'active' class from all labels
             answerLabels.forEach(function (l) {
               l.classList.remove('active');
@@ -163,6 +177,7 @@
       <h1>Pytania z {{code|safe}}</h1>
       <div class="exam_content">
         <p id="question-text"></p>
+        <div id="question-media"></div>
         <div class="answers">
           <label for="answer_A" class="wrapper">
             {% comment %} content here {% endcomment %}

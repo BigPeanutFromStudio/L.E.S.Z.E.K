@@ -4,22 +4,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% include "header_base.html" %}
+    {% include "template_base.html" %}
     <link rel="stylesheet" href="{% static 'exam.css' %}" />
     <title>Egzamin {{examCode}}</title>
     {% csrf_token %}
     <script>
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.documentElement.classList.add('dark');
-      } else if (localStorage.getItem('darkMode') === 'false') {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
-    {{ questions|json_script:"questions_safe" }}
-    <script>
       var currentQuestionIndex = 0;
       const markers = [];
-      const numberOfQuestions = '{{numberOfQuestions}}';
+      const numberOfQuestions = parseInt('{{numberOfQuestions}}');
       var questions = getData();
       var testTime = 40 * 60;
 
@@ -37,6 +29,16 @@
         });
       }
 
+      function imageOrTxt(p_label_id, questionContent) {
+        if (/\.(png|jpg|mp4)$/i.test(questionContent)) {
+          document.getElementById(
+            p_label_id
+          ).innerHTML = `<img src="{% get_static_prefix %}media/${questionContent}" alt="">`;
+        } else {
+          document.getElementById(p_label_id).innerHTML = questionContent;
+        }
+      }
+
       function displayQuestion() {
         markers[currentQuestionIndex].div.classList.add('displayed');
         let currentQuestion = questions[currentQuestionIndex];
@@ -48,17 +50,13 @@
         document.getElementById('question-text').textContent =
           currentQuestion.question;
 
-        document.getElementById('label_A').textContent =
-          currentQuestion.answer_a;
+        imageOrTxt('label_A', currentQuestion.answer_a);
         document.getElementById('answer_A').value = currentQuestion.answer_a;
-        document.getElementById('label_B').textContent =
-          currentQuestion.answer_b;
+        imageOrTxt('label_B', currentQuestion.answer_b);
         document.getElementById('answer_B').value = currentQuestion.answer_b;
-        document.getElementById('label_C').textContent =
-          currentQuestion.answer_c;
+        imageOrTxt('label_C', currentQuestion.answer_c);
         document.getElementById('answer_C').value = currentQuestion.answer_c;
-        document.getElementById('label_D').textContent =
-          currentQuestion.answer_d;
+        imageOrTxt('label_D', currentQuestion.answer_d);
         document.getElementById('answer_D').value = currentQuestion.answer_d;
 
         document.getElementById('question-media').innerHTML = '';
@@ -72,8 +70,11 @@
               : document.createElement('img');
           mediaObject.setAttribute(
             'src',
-            `{% static 'media/${currentQuestion.media}' %}`
+            `{% get_static_prefix %}media/${currentQuestion.media}`
           );
+          if (mediaObject.tagName === 'VIDEO') {
+            mediaObject.setAttribute('controls', '');
+          }
           document.getElementById('question-media').appendChild(mediaObject);
         }
 
@@ -81,13 +82,13 @@
           document.getElementsByName('answers').forEach((ele) => {
             if (ele.value === currentQuestion.selected_answer) {
               ele.checked = true;
+              document.getElementById(`label_for_${ele.id}`).classList.add('active')
             }
           });
         }
       }
 
       function startExam() {
-        console.log(questions);
         displayQuestion();
         window.setInterval(() => {
           testTime--;
@@ -127,16 +128,23 @@
       }
 
       function nextQuestion() {
+        console.log(currentQuestionIndex);
+
         markers[currentQuestionIndex].div.classList.remove('displayed');
         saveCurrentQuestion();
-        currentQuestionIndex = (currentQuestionIndex + 40 + 1) % 40;
+        currentQuestionIndex =
+          (currentQuestionIndex + numberOfQuestions + 1) % numberOfQuestions;
+        console.log(currentQuestionIndex);
         displayQuestion();
       }
 
       function previousQuestion() {
+        console.log(currentQuestionIndex);
         markers[currentQuestionIndex].div.classList.remove('displayed');
         saveCurrentQuestion();
-        currentQuestionIndex = (currentQuestionIndex + 40 - 1) % 40;
+        currentQuestionIndex =
+          (currentQuestionIndex + numberOfQuestions - 1) % numberOfQuestions;
+        console.log(currentQuestionIndex);
         displayQuestion();
       }
 
@@ -149,9 +157,6 @@
 
       async function endExam() {
         saveCurrentQuestion();
-        // DEBUG
-        console.log('Wysłano pytnia:');
-        console.log(questions);
         let headers = new Headers();
         // add header from cookie
         const csrftoken = document.cookie
@@ -192,8 +197,6 @@
         const answerLabels = document.querySelectorAll('.wrapper');
         answerLabels.forEach((label) => {
           label.addEventListener('click', function () {
-            console.log('Clicked label:', this);
-
             // Remove 'active' class from all labels
             answerLabels.forEach(function (l) {
               l.classList.remove('active');
@@ -226,7 +229,7 @@
         <p id="question-text"></p>
         <div id="question-media"></div>
         <div class="answers">
-          <label for="answer_A" class="wrapper">
+          <label for="answer_A" id="label_for_answer_A" class="wrapper">
             {% comment %} content here {% endcomment %}
             <div>
               <input type="radio" name="answers" id="answer_A" required />
@@ -234,7 +237,7 @@
             </div>
             <p id="label_A"></p>
           </label>
-          <label for="answer_B" class="wrapper">
+          <label for="answer_B" id="label_for_answer_B"  class="wrapper">
             {% comment %} content here {% endcomment %}
             <div>
               <input type="radio" name="answers" id="answer_B" required />
@@ -242,7 +245,7 @@
             </div>
             <p id="label_B"></p>
           </label>
-          <label for="answer_C" class="wrapper">
+          <label for="answer_C" id="label_for_answer_C" class="wrapper">
             {% comment %} content here {% endcomment %}
             <div>
               <input type="radio" name="answers" id="answer_C" required />
@@ -250,7 +253,7 @@
             </div>
             <p id="label_C"></p>
           </label>
-          <label for="answer_D" class="wrapper">
+          <label for="answer_D" id="label_for_answer_D" class="wrapper">
             {% comment %} content here {% endcomment %}
             <div>
               <input type="radio" name="answers" id="answer_D" required />

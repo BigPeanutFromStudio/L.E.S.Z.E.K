@@ -5,28 +5,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'landing.css' %}" />
-    {% include "header_base.html" %}
+    {% include "template_base.html" %}
     <title>L.E.S.Z.E.K</title>
-    <script type="module" src="{% static dark_mode.js %}" ></script>
     <script type="text/javascript">
-
-      function setCSSVariables(){
-        if (localStorage.getItem('darkMode') === 'true') {
-          document.documentElement.classList.add('dark');
-        }else if (localStorage.getItem('darkMode') === 'false') {
-          document.documentElement.classList.remove('dark');
-        }
-
+      function goToCKE(){
+        const currentUrl = window.location.href;
+        window.open('/cke/zdajacy/');
       }
-
-      if(!localStorage.getItem('darkMode')){
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          localStorage.setItem('darkMode', 'true')
-        }else{
-          localStorage.setItem('darkMode', 'false')
-        }
-      }
-
       function goToExam(classificationName) {
         let numberOfQuestions = document.getElementById(classificationName).value;
         const currentUrl = window.location.href;
@@ -36,18 +21,39 @@
         const currentUrl = window.location.href;
         window.open(`/application_form/${classificationName}`)
       }
-      function toggleDarkMode(){
-        localStorage.setItem('darkMode', localStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
-        setCSSVariables();
-      }
-      setCSSVariables();
+
+      function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+}
+
+      let authors = ["Piotr Bielański", "Hubert Drozd"]
+      shuffle(authors);
+            document.addEventListener('DOMContentLoaded', function () {
+
+    const text = "Made by " + authors[0] + " & " + authors[1];
+
+      document.getElementById("author-text").textContent = text; 
+      });
+
     </script>
   </head>
   <body>
     <header>
       <h1>Platforma egzaminacyjna ZSA-T</h1>
       <div class="wrapper">
-      <div class="btn_mock_cke" onclick="goTo('https://www.cke.gov.pl')"> {% bs_icon 'box-arrow-up-right' size="1.5rem"%} <div>Testowa strona CKE</div></div>
+      <div class="btn_mock_cke" onclick="goToCKE()"> {% bs_icon 'box-arrow-up-right' size="1.5rem"%} <div>Testowa strona CKE</div></div>
             <div class="switch" id="theme-switch" onclick="toggleDarkMode()">
         {%bs_icon 'brightness-high' size="2rem"%}
       </div>
@@ -55,7 +61,7 @@
         <form action="{% url 'logout'%}" method="post" id="logout-form">
           {% csrf_token %}
           <button id="logout-button">
-            {% bs_icon 'person-circle' size="2rem"%}
+            {% bs_icon 'box-arrow-left' size="2rem"%}
           </button>
         </form>
       {% else %}
@@ -85,5 +91,7 @@
       </div>
       {% endfor %}
     </div>
+    <span id="author-text">
+    </span>
   </body>
 </html>

@@ -13,10 +13,20 @@ body {
   margin-bottom: 10px;
 }
 
+.img-answer {
+  width: 50%;
+}
+
+#question-media img,
+video {
+  max-width: 80%;
+}
+
 #exam_name {
   font-size: var(--header-text);
   font-weight: 600;
 }
+
 #exam_timer_icon * {
   display: flex;
   justify-content: center;
@@ -117,5 +127,10 @@ button:hover {
 
 #endExam:disabled {
   cursor: not-allowed;
-  
+}
+
+#question-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

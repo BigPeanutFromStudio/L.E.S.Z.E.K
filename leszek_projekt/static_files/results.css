@@ -23,7 +23,6 @@ body {
   justify-content: space-around;
 }
 
-
 .question-text {
   font-size: var(--paragraph-text);
   color: var(--dark-text);
@@ -32,7 +31,7 @@ body {
 
 .answer {
   background-color: var(--on-on-background-color, var(--on-background-color));
-  height: 50px;
+  min-height: 50px;
   border-radius: 15px;
   border: var(--border);
   margin: 15px 0;
@@ -81,4 +80,19 @@ h2 {
   border-radius: 50%;
   text-align: center;
   display: block;
+}
+
+.question-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.question-media img,
+video {
+  max-width: 80%;
+}
+
+.img-answer {
+  width: 20%;
 }

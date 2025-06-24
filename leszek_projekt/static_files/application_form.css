@@ -6,7 +6,6 @@ body {
   background-color: var(--background-color);
 }
 
-
 #nextQuestion:hover {
   transform: scale(1.07);
 }
@@ -16,7 +15,6 @@ body {
   display: flex;
   justify-content: center;
 }
-
 
 #nextQuestion {
   border: none;
@@ -104,4 +102,15 @@ h1 {
   background-color: #ffedd5;
   border-color: #fdba74;
   color: #9a3412;
+}
+
+#question-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#question-media img,
+video {
+  max-width: 80%;
 }

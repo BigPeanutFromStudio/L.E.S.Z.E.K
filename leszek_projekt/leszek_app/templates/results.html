@@ -4,19 +4,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% include "header_base.html" %}
+    {% include "template_base.html" %}
     <link rel="stylesheet" href="{% static 'results.css' %}" />
     <title>Wyniki</title>
     <script>
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.documentElement.classList.add('dark');
-      } else if (localStorage.getItem('darkMode') === 'false') {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
-    <script>
       // Whoever is working on this code, I'm sorry
-      function createDiv(question, answers, correct_answer, selected_answer) {
+      function createDiv(
+        question,
+        question_media,
+        answers,
+        correct_answer,
+        selected_answer
+      ) {
         const letters = ['A', 'B', 'C', 'D'];
         const div = document.createElement('div');
         div.setAttribute('class', 'question');
@@ -25,6 +24,27 @@
         p.classList.add('question-text');
         p.appendChild(text);
         div.appendChild(p);
+
+        const mediaDiv = document.createElement('div');
+        mediaDiv.classList.add('question-media');
+
+        let mediaObject = null;
+
+        if (question_media) {
+          mediaObject =
+            question_media.split('.')[1] === 'mp4'
+              ? document.createElement('video')
+              : document.createElement('img');
+          mediaObject.setAttribute(
+            'src',
+            `{% get_static_prefix %}media/${question_media}`
+          );
+          if (mediaObject.tagName === 'VIDEO') {
+            mediaObject.setAttribute('controls', '');
+          }
+          mediaDiv.appendChild(mediaObject);
+        }
+        div.appendChild(mediaDiv);
         const answersDiv = document.createElement('div');
         answersDiv.classList.add('answers');
         answers.forEach((answer, index) => {
@@ -43,8 +63,18 @@
           }
           checkmarkDiv.style.backgroundColor = checkColor;
           answerDiv.appendChild(checkmarkDiv);
-          const text = document.createTextNode(answer);
-          answerDiv.appendChild(text);
+          if (/\.(png|jpg|mp4)$/i.test(answer)) {
+            const imageAnswer = document.createElement('img');
+            imageAnswer.setAttribute(
+              'src',
+              `{% get_static_prefix %}media/${answer}`
+            );
+            imageAnswer.classList.add('img-answer');
+            answerDiv.appendChild(imageAnswer);
+          } else {
+            const text = document.createTextNode(answer);
+            answerDiv.appendChild(text);
+          }
           const color =
             answer === correct_answer ? 'var(--green)' : 'var(--red)';
           answerDiv.style.backgroundColor =
@@ -61,18 +91,17 @@
       }
 
       function getData() {
-        const json = `{{ results|safe }}`;
+        const json = `{{ results|escapejs }}`;
         const data = JSON.parse(json);
-        console.log(data);
 
         if (data.msg === 'Success') {
-          console.log(data.questions);
           document.getElementById('score').innerText =
             'Wynik: ' + data.score + `/${data.questions.length}`;
           document.getElementById('date').innerText = data.date;
           data.questions.forEach((question) => {
             createDiv(
               question.question,
+              question.media,
               [
                 question.answer_a,
                 question.answer_b,

@@ -81,6 +81,7 @@ h1 {
 }
 
 .content {
+  position: relative;
   margin: 20px 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -147,7 +148,7 @@ a {
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.1s ease;
-  box-shadow: 0px 4px 4px 0px #00000040
+  box-shadow: 0px 4px 4px 0px #00000040;
 }
 
 .btn-exam:hover {
@@ -180,6 +181,14 @@ a {
   display: inline;
 }
 
-select{
+select {
   color: var(--light-text);
+}
+
+#author-text {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  font-size: var(--small-text);
 }
