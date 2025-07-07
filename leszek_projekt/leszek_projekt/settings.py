@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'import_export',
 
     'django.contrib.admin',
+    'debug_toolbar',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -131,6 +133,11 @@ LANGUAGES = [
 
 LOCALE_PATHS = [
     BASE_DIR / 'locale',
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "*",
 ]
 
 # Static files (CSS, JavaScript, Images)

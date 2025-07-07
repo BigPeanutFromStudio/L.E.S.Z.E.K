@@ -18,6 +18,27 @@
       document.documentElement.classList.remove('dark');
     }
   }
+  function popUpAboutNoAffiliationWithCKE() {
+    if (!localStorage.getItem('popUp')) {
+      const myModal = document.querySelector('dialog');
+      myModal.show();
+      localStorage.setItem('popUp', 'true');
+      const allbuttons = document.getElementsByClassName('btn-exam');
+      for (let index = 0; index < allbuttons.length; index++) {
+        const element = allbuttons[index];
+        element.setAttribute('disabled', true);
+      }
+    }
+  }
+  function closepopUp() {
+    const allbuttons = document.getElementsByClassName('btn-exam');
+    for (let index = 0; index < allbuttons.length; index++) {
+      const element = allbuttons[index];
+      element.removeAttribute('disabled');
+    }
+    const myModal = document.querySelector('dialog');
+    myModal.close();
+  }
 
   if (!localStorage.getItem('darkMode')) {
     if (
@@ -37,4 +58,7 @@
     setCSSVariables();
   }
   setCSSVariables();
+  document.addEventListener('DOMContentLoaded', function () {
+    popUpAboutNoAffiliationWithCKE();
+  });
 </script>

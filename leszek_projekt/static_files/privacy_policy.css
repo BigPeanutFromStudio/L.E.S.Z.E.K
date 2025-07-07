@@ -1,0 +1,63 @@
+@import url(root.css);
+html {
+  min-height: 100%;
+}
+body {
+  background-image: var(--gradient-light);
+  color: var(--dark-text);
+  height: 100%;
+}
+h3 {
+  font-weight: 500;
+  font-size: var(--header-text);
+  padding-top: 20px;
+}
+p {
+  padding: 0 40px;
+}
+ul {
+  padding: 0 80px;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: justify;
+  padding: 40px;
+  font-size: var(--paragraph-text);
+  line-height: 1.3;
+}
+strong {
+  font-weight: 800;
+}
+hr {
+  margin: 50px 0px;
+  border: 1px solid var(--primary-color);
+}
+
+blockquote{
+  font-size: 1.4em;
+
+  font-style:italic;
+  color: var(--secondary-color);
+  padding:1.2em 30px 1.2em 75px;
+  border-left:8px solid var(--primary-color) ;
+  line-height:1.5;
+  position: relative;
+  background:var(--on-background-color);
+  box-shadow: var(--box-shadow);
+}
+
+blockquote::before{
+  font-family:Arial;
+  content: "\201C";
+  color:var(--secondary-color);
+  font-size:4em;
+  position: absolute;
+  left: 10px;
+  top:-10px;
+}
+
+blockquote::after{
+  content: '';
+}

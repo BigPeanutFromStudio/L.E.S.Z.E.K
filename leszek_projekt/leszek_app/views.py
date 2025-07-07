@@ -13,11 +13,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
-# TODO: Easter eggs
+# TODO: This is slow, very much
 def landing(request: HttpRequest):
-    classifications = Code.objects.all()
+    classifications = list(Code.objects.all())
     classifications_quantities = {}
-    questions = Question.objects.all().prefetch_related()
+    questions = Question.objects.all().prefetch_related('code_id')
     for c in classifications:
         classifications_quantities[c.code_name] = questions.filter(code_id=c).count()
     context = {"classifications": classifications_quantities}
@@ -35,7 +35,7 @@ def exam(request: HttpRequest):
     return render(request, "exam.html", context)
 
 
-def postExamResults(request: HttpRequest):
+def post_exam_results(request: HttpRequest):
     questions = loads(request.body)["questions"]
     score = 0
     for i, question in enumerate(questions):
@@ -51,7 +51,7 @@ def postExamResults(request: HttpRequest):
 
     return HttpResponse(serialize("json", [])) 
 
-def displayExamResults(request: HttpRequest):
+def display_exam_results(request: HttpRequest):
     if request.session.has_key("score"):
         results = dumps({"msg": "Success", "questions": request.session['questions'], "score": request.session['score'],"date":request.session['date']})
     else:
@@ -77,8 +77,8 @@ def save_correct_answer(request: HttpRequest):
     return JsonResponse({"success": True})
 
 
-def cke_zdajacy(request: HttpRequest):
-    return render(request, "cke/zdajacy.html")
+def cke_login(request: HttpRequest):
+    return render(request, "cke/login.html")
 def cke_exam(request: HttpRequest):
     return render(request, "cke/cke_exam.html",{"server_url":"http://127.0.0.1:8000/"})
 def cke_answer(request: HttpRequest):
@@ -114,3 +114,6 @@ def logout_view(request):
     if request.method == "POST":
         logout(request)
         return redirect("/")
+
+def privacy_policy(request):
+    return render(request,"privacy_policy.html",)

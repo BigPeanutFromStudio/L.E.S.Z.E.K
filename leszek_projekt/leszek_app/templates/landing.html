@@ -10,7 +10,7 @@
     <script type="text/javascript">
       function goToCKE(){
         const currentUrl = window.location.href;
-        window.open('/cke/zdajacy/');
+        window.open('/cke/login/');
       }
       function goToExam(classificationName) {
         let numberOfQuestions = document.getElementById(classificationName).value;
@@ -19,7 +19,7 @@
       }
       function editExam(classificationName){
         const currentUrl = window.location.href;
-        window.open(`/application_form/${classificationName}`)
+        window.open(`/application-form/${classificationName}`)
       }
 
       function shuffle(array) {
@@ -50,6 +50,14 @@
     </script>
   </head>
   <body>
+      <dialog>
+      <div class="top"><h2>UWAGA!</h2><button onclick="closepopUp()"> {% bs_icon 'x' size="1rem"%}</button></div>
+      <p>Ta platforma nie jest powiązana z Centralną Komisją Egzaminacyjną (CKE).
+
+Jej celem jest edukacja i ćwiczenie umiejętności egzaminacyjnych w bezpiecznym i nieformalnym środowisku.
+Wszystkie treści mają charakter pomocniczy i nieoficjalny.</p>
+      
+    </dialog>
     <header>
       <h1>Platforma egzaminacyjna ZSA-T</h1>
       <div class="wrapper">
@@ -90,8 +98,10 @@
         {% endif %}
       </div>
       {% endfor %}
-    </div>
+    </div><div class="footer">
     <span id="author-text">
     </span>
+    <a class="normal-link" href="/polityka-prywatnosci" target="_blank">Polityka Prywatności</a>
+</div>
   </body>
 </html>

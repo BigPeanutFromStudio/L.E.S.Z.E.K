@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polityka Prywatności</title>
+    {% include "template_base.html" %}
+    <link rel="stylesheet" href="{% static 'privacy_policy.css' %}" />
+  </head>
+  <body>
+    <div class="content">
+        <h3>1. Informacje ogólne</h3>
+        <p>
+          Niniejsza polityka prywatności opisuje zasady przetwarzania i ochrony
+          informacji związanych z użytkownikami odwiedzającymi stronę egzaminującą
+          prowadzoną przez Zespół Szkół Agro-Technicznych im. Wincenta Witosa.
+        </p>
+        <h3>2. Brak zbierania danych osobowych</h3>
+        <p>
+          Strona
+          <strong>nie zbiera ani nie przetwarza danych osobowych</strong>
+          użytkowników. Nie wymagamy podawania imienia, nazwiska, adresu e-mail ani
+          żadnych innych informacji identyfikujących.
+        </p>
+        <h3>3. Pliki cookies i dane lokalne</h3>
+        <p>
+          Strona korzysta z technicznych plików cookies
+          <strong>wyłącznie w celu autoryzacji zapytań HTTP</strong>.
+        </p>
+        <p>
+          Dodatkowo, w przeglądarce użytkownika lokalnie przechowywane są
+          następujące dane za pomocą <code>localStorage</code>:
+        </p>
+        <ul>
+          <li>preferencje motywu graficznego</li>
+          <li>stan interfejsu</li>
+          <li>informacja o tym, czy użytkownik widział powitalny komunikat</li>
+        </ul>
+        <p>
+          Dane te nie są przesyłane na serwer i służą wyłącznie poprawie komfortu
+          korzystania ze strony.
+        </p>
+        <h3>4. Usługi zewnętrzne</h3>
+        <p>Strona korzysta z następujących usług zewnętrznych:</p>
+        <ul>
+          <li>
+            <strong>Google Fonts</strong> - w celu wyświetlania czcionek;
+            przeglądarka użytkownika może nawiązać połączenie z serwerami Google
+            (np. przesłanie adresu IP),
+          </li>
+          <li>
+            <strong>Bootstrap Icons</strong> - biblioteka ikon ładowana przez system
+            szablonów Django; nie powoduje zbierania danych osobowych, ale może
+            skutkować żądaniami do zewnętrznych zasobów CDN.
+          </li>
+        </ul>
+        <h3>5. Bezpieczeństwo</h3>
+        <p>
+          Strona działa na szkolnym serwerze, a przesyłane dane (np. odpowiedzi
+          użytkownika) nie są zapisywane ani przetwarzane poza przeglądarką
+          użytkownika. Stosujemy podstawowe środki bezpieczeństwa, by chronić
+          komunikację HTTP i autoryzację zapytań.
+        </p>
+        <h3>6. Dostępność strony</h3>
+        <p>
+          Strona jest publicznie dostępna i nie wymaga logowania ani podawania
+          jakichkolwiek danych w celu skorzystania z egzaminów.
+        </p>
+        <h3>7. Administrator danych</h3>
+        <p>
+          Administratorem strony jest Zespół Szkół Agro-Technicznych im. Wincenta
+          Witosa<br />Dane kontaktowe:
+          <em>Nie wiem czy to dawać, zapytamy Wojtaszka</em>
+        </p>
+        <h3>8. Zmiany w polityce prywatności</h3>
+        <p>
+          Zastrzegamy sobie prawo do wprowadzania zmian w niniejszej polityce, w
+          szczególności w przypadku zmian w zakresie funkcjonowania strony lub
+          obowiązujących przepisów prawa.
+        </p>
+        <hr>
+       <blockquote class="blockquote blockquote--classic">
+
+<p>
+    Ta platforma nie jest powiązana z Centralną Komisją Egzaminacyjną (CKE).
+    
+    Jej celem jest edukacja i ćwiczenie umiejętności egzaminacyjnych w bezpiecznym i nieformalnym środowisku.
+    Wszystkie treści mają charakter pomocniczy i nieoficjalny
+</p>
+       </blockquote> 
+          </body>
+    </div>
+</html>

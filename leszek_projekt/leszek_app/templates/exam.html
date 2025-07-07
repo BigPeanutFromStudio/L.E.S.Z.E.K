@@ -13,7 +13,7 @@
       const markers = [];
       const numberOfQuestions = parseInt('{{numberOfQuestions}}');
       var questions = getData();
-      var testTime = 40 * 60;
+      var testTime = numberOfQuestions * 60;
 
       function generateMarkers() {
         const markerParent = document.getElementById(
@@ -82,7 +82,9 @@
           document.getElementsByName('answers').forEach((ele) => {
             if (ele.value === currentQuestion.selected_answer) {
               ele.checked = true;
-              document.getElementById(`label_for_${ele.id}`).classList.add('active')
+              document
+                .getElementById(`label_for_${ele.id}`)
+                .classList.add('active');
             }
           });
         }
@@ -218,7 +220,7 @@
         <p id="exam_name">Egzamin {{examCode}}</p>
         <div class="exam_timer">
           <div id="exam_timer_icon">{%bs_icon 'stopwatch' size="1em" %}</div>
-          <span id="exam_timer_text">40:00</span>
+          <span id="exam_timer_text"></span>
         </div>
       </div>
       <div class="questions_markers">
@@ -237,7 +239,7 @@
             </div>
             <p id="label_A"></p>
           </label>
-          <label for="answer_B" id="label_for_answer_B"  class="wrapper">
+          <label for="answer_B" id="label_for_answer_B" class="wrapper">
             {% comment %} content here {% endcomment %}
             <div>
               <input type="radio" name="answers" id="answer_B" required />

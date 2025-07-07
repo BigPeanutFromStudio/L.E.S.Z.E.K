@@ -185,10 +185,22 @@ select {
   color: var(--light-text);
 }
 
-#author-text {
+.footer {
   position: absolute;
   right: 0;
   bottom: 0;
-  padding: 10px;
+  padding: 10px 10px 0px 0px;
+  margin-right: 10px;
   font-size: var(--small-text);
+  display: flex;
+  flex-direction: column;
+}
+a {
+  padding-top: 5px;
+}
+
+.normal-link {
+  cursor: pointer;
+  color: var(--primary-color);
+  text-decoration: underline;
 }

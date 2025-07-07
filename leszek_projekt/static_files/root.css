@@ -80,3 +80,44 @@ reder: #940505
   margin: 0;
   padding: 0;
 }
+
+body {
+  position: relative;
+}
+
+dialog {
+  position: absolute;
+  width: 30vw;
+  background-color: var(--grey);
+  height: 18vh;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10000;
+  box-shadow: 0px 0px 35px 3000px hsla(184, 100%, 10%, 0.5);
+  border: var(--secondary-color) 2px solid;
+  border-radius: 8px;
+  padding: 10px;
+}
+dialog p,
+dialog h2 {
+  color: var(--dark-text);
+}
+dialog .top {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 10px;
+}
+dialog p {
+  padding: 10px;
+}
+dialog button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: var(--secondary-color) 2px solid;
+  border-radius: 5px;
+  width: 20px;
+}
+dialog button svg path {
+  color: var(--light-text) !important;
+}
