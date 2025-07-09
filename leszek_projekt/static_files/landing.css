@@ -7,7 +7,7 @@ html {
 body {
   background-image: var(--gradient-light);
   color: var(--dark-text);
-  height: 100%;
+  min-height: 100vh;
 }
 
 header {
@@ -82,7 +82,7 @@ h1 {
 
 .content {
   position: relative;
-  margin: 20px 0;
+  margin: 20px 0px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   column-gap: 20px;
@@ -188,7 +188,7 @@ select {
 .footer {
   position: absolute;
   right: 0;
-  bottom: 0;
+  bottom: 20px;
   padding: 10px 10px 0px 0px;
   margin-right: 10px;
   font-size: var(--small-text);

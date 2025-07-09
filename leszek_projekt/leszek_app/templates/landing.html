@@ -15,11 +15,11 @@
       function goToExam(classificationName) {
         let numberOfQuestions = document.getElementById(classificationName).value;
         const currentUrl = window.location.href;
-        window.open(`/exam?code=${classificationName}&nr=${numberOfQuestions}`);
+        window.open(`/exam?code=${classificationName}&nr=${numberOfQuestions}`, "_self");
       }
       function editExam(classificationName){
         const currentUrl = window.location.href;
-        window.open(`/application-form/${classificationName}`)
+        window.open(`/application-form/${classificationName}`, "_self")
       }
 
       function shuffle(array) {
@@ -83,22 +83,26 @@ Wszystkie treści mają charakter pomocniczy i nieoficjalny.</p>
 
     <div class="content">
       <!-- Automatically generated elements -->
-      {% for classification_name, quantity in classifications.items %}
+      {% load cache %}
+      {% cache 1966 sidebar user.is_authenticated classifications %}
+      {% for classification in classifications %}
       <div class="card">
-        <h2>{{classification_name}}</h2>
-        <div class="quantity_display">{{quantity}}</div>
+        <h2>{{classification.code_name}}</h2>
+        <div class="quantity_display">{{classification.count}}</div>
         <div class="extra">
-          <div class="center">{% bs_icon 'file-earmark-text' size="1.5rem" %} <select name="questions_in_exam" class="questions_in_exam" id="{{classification_name}}"><option value="40">40 pytań</option><option value="20">20 pytań</option></select></div>
+          <div class="center">{% bs_icon 'file-earmark-text' size="1.5rem" %} <select name="questions_in_exam" class="questions_in_exam" id="{{classification.code_name}}"><option value="40">40 pytań</option><option value="20">20 pytań</option></select></div>
           <div class="center">{% bs_icon 'clock' size="1.5rem" %} <span><select class="unselectable" disabled><option value="">40 min</option></select></span></div>
         </div>
         {% if user.is_authenticated %}
-          <button class="btn-exam" onclick="editExam('{{classification_name}}')">Redaguj egzamin</button>
+          <button class="btn-exam" onclick="editExam('{{classification.code_name}}')">Redaguj egzamin</button>
         {% else %}
-          <button class="btn-exam" onclick="goToExam('{{classification_name}}')">Rozpocznij egzamin</button>
+          <button class="btn-exam" onclick="goToExam('{{classification.code_name}}')">Rozpocznij egzamin</button>
         {% endif %}
       </div>
       {% endfor %}
-    </div><div class="footer">
+      {% endcache %}
+    </div>
+    <div class="footer">
     <span id="author-text">
     </span>
     <a class="normal-link" href="/polityka-prywatnosci" target="_blank">Polityka Prywatności</a>

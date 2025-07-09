@@ -1,13 +1,13 @@
 .container {
   padding: 60px;
-  gap: 15px;
+  row-gap: 15px;
   display: flex;
   flex-direction: column;
 }
 .exam_content {
   width: 90vw;
   width: -webkit-fill-available;
-  height: fit-content;
+  min-height: fit-content;
   background-color: var(--on-background-color);
   margin: auto auto;
   padding: 20px;
@@ -30,9 +30,8 @@
   color: var(--light-text) !important;
 }
 
-
 .wrapper {
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.1s ease;
   display: flex;
   flex-direction: row;
   justify-items: center;
@@ -40,7 +39,7 @@
   background-color: var(--on-on-background-color, var(--on-background-color));
   padding: 20px;
   border-radius: 10px;
-  box-shadow: var(--box-shadow,none);
+  box-shadow: var(--box-shadow, none);
   height: 100%;
   gap: 15px;
   position: relative;
@@ -52,6 +51,11 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
 }
 
 .wrapper:hover {
@@ -84,21 +88,17 @@
 
 /* On mouse-over, add a grey background color */
 .wrapper:hover input ~ .checkmark {
-  background-color: color-mix(
-    in srgb,
-    var(--primary-color),
-    rgba(0, 0, 0, 0.25)
-  );
-  border: none;
+  background-color: var(--checkmark-hover-color);
+  border-color: var(--checkmark-hover-color);
 }
-
-
+.wrapper:hover input:checked ~ .checkmark {
+  background-color: var(--checkmark-hover-color);
+}
 /* When the radio button is checked, add a blue background */
 .wrapper input:checked ~ .checkmark {
   background-color: var(--primary-color);
   color: var(--light-text) !important;
 }
-
 
 .wrapper .checkmark:after {
   top: 9px;

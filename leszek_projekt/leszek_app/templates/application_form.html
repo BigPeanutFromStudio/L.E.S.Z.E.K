@@ -5,10 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% include "template_base.html" %}
-    <link rel="stylesheet" href="{% static 'application-form.css' %}" />
+    <link rel="stylesheet" href="{% static 'application_form.css' %}" />
     <title>Redagowanie pytań do egzaminu {{examCode}}</title>
     <script>
-      // TOAST.JS (your version)
       const FADE_DUR = 100;
       const DISPLAY_DUR = 1000;
       let toastContain;
@@ -59,7 +58,7 @@
       var globalQuestion = null;
 
       function startExam() {
-        var question = JSON.parse(`{{ question_json|safe }}`);
+        var question = JSON.parse(`{{ question_json|escapejs }}`);
         globalQuestion = question;
         showQuestion(question);
       }

@@ -35,20 +35,8 @@ h1 {
   text-align: center;
   font-size: var(--title-text);
 }
-
-/* Removed specific #endExam button as it's covered by general button style now
-     If you need two distinct buttons, you can add it back with different positioning.
-     The current setup assumes one main action button.
-  */
-/*
-  .button-container button#endExam {
-      left: 30px;
-  }
-  */
-
-/* TOAST CSS STYLES (as provided by you) */
 .toastContain {
-  z-index: 1050; /* Increased z-index */
+  z-index: 1050; 
   position: fixed;
   left: 50%;
   bottom: 4rem;

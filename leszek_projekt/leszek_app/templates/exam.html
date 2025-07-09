@@ -92,6 +92,13 @@
 
       function startExam() {
         displayQuestion();
+        let timeMinutes = Math.floor(testTime / 60);
+        let timeSeconds = testTime - timeMinutes * 60;
+        timeSeconds =
+          timeSeconds.toString().length > 1 ? timeSeconds : '0' + timeSeconds;
+        document.getElementById(
+          'exam_timer_text'
+        ).textContent = `${timeMinutes}:${timeSeconds}`;
         window.setInterval(() => {
           testTime--;
           if (testTime <= 0) {

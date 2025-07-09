@@ -1,9 +1,8 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
-from random import sample, randint  
 from .models import Question, Code, QuestionApplication
 from json import dumps, loads
-from django.db.models import Count
+from django.db.models import Count, F
 from django.core.serializers import serialize
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, JsonResponse 
@@ -12,16 +11,21 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
-# TODO: This is slow, very much
 def landing(request: HttpRequest):
-    classifications = list(Code.objects.all())
-    classifications_quantities = {}
-    questions = Question.objects.all().prefetch_related('code_id')
-    for c in classifications:
-        classifications_quantities[c.code_name] = questions.filter(code_id=c).count()
-    context = {"classifications": classifications_quantities}
-    return render(request, "landing.html", context)
+    if (request.user.is_authenticated): 
+        applied_question_ids = QuestionApplication.objects.values("question_id")
+        classifications_quantities = list(Question.objects.filter(correct_answer__isnull=True)
+    .exclude(pk__in=applied_question_ids)
+    .annotate(
+        code_name=F("code_id__code_name")
+    )
+    .values("code_name")
+    .annotate(count=Count("id")) 
+    .order_by("code_name"))
+    else:
+        classifications_quantities = list(Code.objects.annotate(count=Count('question')).values('code_name', 'count'))
+    print(classifications_quantities)
+    return render(request, "landing.html", {"classifications": classifications_quantities})
 
 @csrf_exempt
 def exam(request: HttpRequest):
@@ -85,6 +89,7 @@ def cke_answer(request: HttpRequest):
     return render(request, "cke/answer.html",{"server_url":"http://127.0.0.1:8000/"})
 def cke_exam_instruction(request: HttpRequest):
     return render(request, "cke/cke_exam_instrukcja.html",{"server_url":"http://127.0.0.1:8000/"})
+
 # def register_view(request):
 #     if request.method == "POST":
 #         form = UserCreationForm(request.POST)

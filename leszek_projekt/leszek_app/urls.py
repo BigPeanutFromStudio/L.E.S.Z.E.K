@@ -1,6 +1,5 @@
 from . import views
 from django.urls import path, include
-from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path("", views.landing, name="landing"),
@@ -16,5 +15,5 @@ urlpatterns = [
     path('cke/egzamin/',views.cke_exam,name='cke_exam'),
     path('cke/odpowiedz/',views.cke_answer,name='cke_answer'),
     path('cke/exam_instrukcja',views.cke_exam_instruction, name='cke_exam_instruction'),
-    path('polityka-prywatnosci/',views.privacy_policy,name='privacy_policy')
-] + debug_toolbar_urls()
+    path('polityka-prywatnosci/',views.privacy_policy,name='privacy_policy'),
+]
