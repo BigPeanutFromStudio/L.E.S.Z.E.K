@@ -1,52 +1,140 @@
-{% load static %}
+{% load bootstrap_icons %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "template_base.html" %}
     <link rel="stylesheet" href="{% static 'results.css' %}" />
     <title>Wyniki</title>
     <script>
-      function createDiv(question, answers, correctanswer, selected_answer) {
-        const div = document.createElement("div");
-        div.setAttribute("class", "question")
+      // Whoever is working on this code, I'm sorry
+      function createDiv(
+        question,
+        question_media,
+        answers,
+        correct_answer,
+        selected_answer
+      ) {
+        const letters = ['A', 'B', 'C', 'D'];
+        const div = document.createElement('div');
+        div.setAttribute('class', 'question');
         const text = document.createTextNode(question);
-        div.appendChild(text);
-        answers.forEach((answer) => {
-          const answerDiv = document.createElement("div");
-          const text = document.createTextNode(answer);
-          answerDiv.appendChild(text);
-          const color = answer === correctanswer ? "green" : "red";
-          answerDiv.style.backgroundColor = answer === selected_answer ? color : "";
-          answerDiv.setAttribute("class", "answer")
-          div.appendChild(answerDiv);
+        const p = document.createElement('p');
+        p.classList.add('question-text');
+        p.appendChild(text);
+        div.appendChild(p);
+
+        const mediaDiv = document.createElement('div');
+        mediaDiv.classList.add('question-media');
+
+        let mediaObject = null;
+
+        if (question_media) {
+          mediaObject =
+            question_media.split('.')[1] === 'mp4'
+              ? document.createElement('video')
+              : document.createElement('img');
+          mediaObject.setAttribute(
+            'src',
+            `{% get_static_prefix %}media/${question_media}`
+          );
+          if (mediaObject.tagName === 'VIDEO') {
+            mediaObject.setAttribute('controls', '');
+          }
+          mediaDiv.appendChild(mediaObject);
+        }
+        div.appendChild(mediaDiv);
+        const answersDiv = document.createElement('div');
+        answersDiv.classList.add('answers');
+        answers.forEach((answer, index) => {
+          const answerDiv = document.createElement('div');
+          const checkmarkDiv = document.createElement('div');
+          checkmarkDiv.classList.add('checkmark');
+          checkmarkDiv.textContent = letters[index];
+          const checkColor =
+            answer === selected_answer && answer === correct_answer
+              ? 'var(--greener)'
+              : answer === selected_answer
+              ? 'var(--redder)'
+              : '';
+          if (answer === selected_answer) {
+            checkmarkDiv.style.border = 'none';
+          }
+          checkmarkDiv.style.backgroundColor = checkColor;
+          answerDiv.appendChild(checkmarkDiv);
+          if (/\.(png|jpg|mp4)$/i.test(answer)) {
+            const imageAnswer = document.createElement('img');
+            imageAnswer.setAttribute(
+              'src',
+              `{% get_static_prefix %}media/${answer}`
+            );
+            imageAnswer.classList.add('img-answer');
+            answerDiv.appendChild(imageAnswer);
+          } else {
+            const text = document.createTextNode(answer);
+            answerDiv.appendChild(text);
+          }
+          const color =
+            answer === correct_answer ? 'var(--green)' : 'var(--red)';
+          answerDiv.style.backgroundColor =
+            answer === selected_answer || answer === correct_answer
+              ? color
+              : '';
+          answerDiv.setAttribute('class', 'answer');
+          answersDiv.appendChild(answerDiv);
         });
+
+        div.appendChild(answersDiv);
 
         document.body.appendChild(div);
       }
 
-      async function getData() {
-        const data = await fetch("/getExamResults")
-          .then((res) => res.json())
-          .then((res) => {
-            return res;
-          });
-        if (data.msg === "Success") {
-          console.log(data.questions);
-          document.getElementById("score").innerText = "wynik: " + data.score
+      function getData() {
+        const json = `{{ results|escapejs }}`;
+        const data = JSON.parse(json);
+
+        if (data.msg === 'Success') {
+          document.getElementById('score').innerText =
+            'Wynik: ' + data.score + `/${data.questions.length}`;
+          document.getElementById('date').innerText = data.date;
           data.questions.forEach((question) => {
-            createDiv(question.fields.question, [question.fields.answer_a, question.fields.answer_b, question.fields.answer_c ,question.fields.answer_d], question.fields.correct_answer, question.fields.selected_answer);
+            createDiv(
+              question.question,
+              question.media,
+              [
+                question.answer_a,
+                question.answer_b,
+                question.answer_c,
+                question.answer_d,
+              ],
+              question.correct_answer,
+              question.selected_answer
+            );
           });
         } else {
           document.write(data.msg);
         }
       }
-      getData();
+      document.addEventListener('DOMContentLoaded', function () {
+        getData();
+      });
+
+      function goHome() {
+        const currentUrl = window.location.href;
+        window.open('/', '_self');
+      }
     </script>
   </head>
   <body>
-    <div id="score">
-
+    <div class="header">
+      <div class="home-btn" onclick="goHome()">
+        {% bs_icon 'house' size="3rem"%}
+      </div>
+      <div class="data">
+        <h1 id="score"></h1>
+        <h2 id="date"></h2>
+      </div>
     </div>
   </body>
 </html>

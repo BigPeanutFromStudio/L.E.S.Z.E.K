@@ -1,0 +1,222 @@
+{% load static %} {% load bootstrap_icons %}
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "template_base.html" %}
+    <link rel="stylesheet" href="{% static 'application_form.css' %}" />
+    <title>Redagowanie pytań do egzaminu {{examCode}}</title>
+    <script>
+      const FADE_DUR = 100;
+      const DISPLAY_DUR = 1000;
+      let toastContain;
+
+      function ensureToastContainer() {
+        if (!toastContain) {
+          toastContain = document.createElement('div');
+          toastContain.classList.add('toastContain');
+          document.body.appendChild(toastContain);
+        }
+      }
+
+      function toast(message, extraClasses, extraTime) {
+        ensureToastContainer();
+
+        const EL = document.createElement('div');
+        EL.classList.add('toast');
+        if (extraClasses && typeof extraClasses === 'string') {
+          // Ensure extraClasses is a string
+          EL.classList.add(extraClasses);
+        } else if (Array.isArray(extraClasses)) {
+          // Handle if it's still an array (e.g. for multiple classes)
+          EL.classList.add(...extraClasses);
+        }
+        EL.innerText = message;
+
+        // toastContain.appendChild(EL); // Original: for standard stacking
+        toastContain.prepend(EL); // For flex-direction: column-reverse, prepend puts new item at visual "top" of stack
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            EL.classList.add('open');
+          });
+        });
+
+        setTimeout(() => {
+          EL.classList.remove('open');
+        }, DISPLAY_DUR + extraTime);
+
+        setTimeout(() => {
+          if (EL.parentNode === toastContain) {
+            toastContain.removeChild(EL);
+          }
+        }, DISPLAY_DUR + FADE_DUR + 100 + extraTime);
+      }
+      window.showToast = toast; // Make it globally accessible for the button
+
+      var globalQuestion = null;
+
+      function startExam() {
+        var question = JSON.parse(`{{ question_json|escapejs }}`);
+        globalQuestion = question;
+        showQuestion(question);
+      }
+
+      function imageOrTxt(p_label_id, questionContent) {
+        if (/\.(png|jpg|mp4)$/i.test(questionContent)) {
+          document.getElementById(
+            p_label_id
+          ).innerHTML = `<img src="{% get_static_prefix %}media/${questionContent}" alt="">`;
+        } else {
+          document.getElementById(p_label_id).innerHTML = questionContent;
+        }
+      }
+
+      function showQuestion(question) {
+        let currentQuestion = question;
+
+        document.getElementById('question-text').textContent =
+          currentQuestion.question;
+
+        imageOrTxt('label_A', currentQuestion.answer_a);
+        document.getElementById('answer_A').value = currentQuestion.answer_a;
+        imageOrTxt('label_B', currentQuestion.answer_b);
+        document.getElementById('answer_B').value = currentQuestion.answer_b;
+        imageOrTxt('label_C', currentQuestion.answer_c);
+        document.getElementById('answer_C').value = currentQuestion.answer_c;
+        imageOrTxt('label_D', currentQuestion.answer_d);
+        document.getElementById('answer_D').value = currentQuestion.answer_d;
+
+        document.getElementById('question-media').innerHTML = '';
+
+        let mediaObject = null;
+
+        if (currentQuestion.media) {
+          mediaObject =
+            currentQuestion.media.split('.')[1] === 'mp4'
+              ? document.createElement('video')
+              : document.createElement('img');
+          mediaObject.setAttribute(
+            'src',
+            `{% get_static_prefix %}media/${currentQuestion.media}`
+          );
+          if (mediaObject.tagName === 'VIDEO') {
+            mediaObject.setAttribute('controls', '');
+          }
+          document.getElementById('question-media').appendChild(mediaObject);
+        }
+
+        if (currentQuestion.selected_answer !== '') {
+          document.getElementsByName('answers').forEach((ele) => {
+            if (ele.value === currentQuestion.selected_answer) {
+              ele.checked = true;
+            }
+          });
+        }
+      }
+
+      async function sendAnswer() {
+        document.getElementById('nextQuestion').disabled = true;
+        try {
+          const questionToSend = {
+            ...globalQuestion,
+            correct_answer: document.querySelector(
+              'input[name="answers"]:checked'
+            ).value,
+          };
+          let headers = new Headers();
+          // add header from cookie
+          const csrftoken = document.cookie
+            .split(';')
+            .filter((cookie) => cookie.includes('csrftoken'))[0]
+            .split('=')[1];
+
+          headers.append('X-CSRFToken', csrftoken);
+          const response = await fetch('/updateQuestion', {
+            method: 'POST',
+            body: JSON.stringify({ question: questionToSend }),
+            credentials: 'same-origin',
+            headers: headers,
+          });
+          showToast('Odpowiedź została przesłana', 'success', 0);
+          setTimeout(() => {
+            location.reload();
+            document.getElementById('nextQuestion').disabled = false;
+          }, FADE_DUR + DISPLAY_DUR);
+        } catch (error) {
+          showToast('Wystąpił błąd: ' + error, 'failure', 1500);
+          document.getElementById('nextQuestion').disabled = false;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        startExam();
+      });
+      const answerLabels = undefined;
+      document.addEventListener('DOMContentLoaded', function () {
+        const answerLabels = document.querySelectorAll('.wrapper');
+        answerLabels.forEach((label) => {
+          label.addEventListener('click', function () {
+            // Remove 'active' class from all labels
+            answerLabels.forEach(function (l) {
+              l.classList.remove('active');
+            });
+
+            // Add 'active' class to the clicked label
+            this.classList.add('active');
+          });
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Pytania z {{code|safe}}</h1>
+      <div class="exam_content">
+        <p id="question-text"></p>
+        <div id="question-media"></div>
+        <div class="answers">
+          <label for="answer_A" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_A" required />
+              <div class="checkmark">A</div>
+            </div>
+            <p id="label_A"></p>
+          </label>
+          <label for="answer_B" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_B" required />
+              <div class="checkmark">B</div>
+            </div>
+            <p id="label_B"></p>
+          </label>
+          <label for="answer_C" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_C" required />
+              <div class="checkmark">C</div>
+            </div>
+            <p id="label_C"></p>
+          </label>
+          <label for="answer_D" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_D" required />
+              <div class="checkmark">D</div>
+            </div>
+            <p id="label_D"></p>
+          </label>
+        </div>
+      </div>
+      <div class="button-container">
+        <button onclick="sendAnswer()" id="nextQuestion">
+          Prześlij odpowiedź
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

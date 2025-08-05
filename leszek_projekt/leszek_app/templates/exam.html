@@ -1,171 +1,286 @@
-{% load static %}
+{% load static %} {% load bootstrap_icons %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "template_base.html" %}
     <link rel="stylesheet" href="{% static 'exam.css' %}" />
-    <title>Document</title>
+    <title>Egzamin {{examCode}}</title>
+    {% csrf_token %}
     <script>
-      const code = "{{examCode}}";
-      const answer_id = ["answer_a", "answer_b", "answer_c", "answer_d"];
-      const letters = ["D", "C", "B", "A"];
-      const max_questions = 40;
-
-      function showEndExam() {
-        document.getElementById("nextQuestion").setAttribute("hidden", "true");
-      }
-      function hideEndExam() {
-        document.getElementById("nextQuestion").removeAttribute("hidden");
-      }
-
       var currentQuestionIndex = 0;
-      var globalQuestions;
-      async function startExam() {
-        var questions = await getData();
-        globalQuestions = questions.slice(0, max_questions);
-        console.log(globalQuestions);
-        if (globalQuestions.filter((question) => question.answered === false).length === 1) {
-          showEndExam();
+      const markers = [];
+      const numberOfQuestions = parseInt('{{numberOfQuestions}}');
+      var questions = getData();
+      var testTime = numberOfQuestions * 60;
+
+      function generateMarkers() {
+        const markerParent = document.getElementById(
+          'question_markers_container'
+        );
+        questions.forEach((question, index) => {
+          let markerDiv = document.createElement('div');
+          markerDiv.classList.add('marker', 'unanswered');
+          markerDiv.setAttribute('onclick', `goToQuestion(${index})`);
+          markerObj = { id: index, div: markerDiv };
+          markers.push(markerObj);
+          markerParent.appendChild(markerDiv);
+        });
+      }
+
+      function imageOrTxt(p_label_id, questionContent) {
+        if (/\.(png|jpg|mp4)$/i.test(questionContent)) {
+          document.getElementById(
+            p_label_id
+          ).innerHTML = `<img src="{% get_static_prefix %}media/${questionContent}" alt="">`;
         } else {
-          hideEndExam();
+          document.getElementById(p_label_id).innerHTML = questionContent;
         }
-        showQuestion(globalQuestions[currentQuestionIndex], currentQuestionIndex);
+      }
+
+      function displayQuestion() {
+        markers[currentQuestionIndex].div.classList.add('displayed');
+        let currentQuestion = questions[currentQuestionIndex];
+
+        document.getElementById('current_question').textContent = `Pytanie ${
+          currentQuestionIndex + 1
+        } z ${numberOfQuestions}`;
+
+        document.getElementById('question-text').textContent =
+          currentQuestion.question;
+
+        imageOrTxt('label_A', currentQuestion.answer_a);
+        document.getElementById('answer_A').value = currentQuestion.answer_a;
+        imageOrTxt('label_B', currentQuestion.answer_b);
+        document.getElementById('answer_B').value = currentQuestion.answer_b;
+        imageOrTxt('label_C', currentQuestion.answer_c);
+        document.getElementById('answer_C').value = currentQuestion.answer_c;
+        imageOrTxt('label_D', currentQuestion.answer_d);
+        document.getElementById('answer_D').value = currentQuestion.answer_d;
+
+        document.getElementById('question-media').innerHTML = '';
+
+        let mediaObject = null;
+
+        if (currentQuestion.media) {
+          mediaObject =
+            currentQuestion.media.split('.')[1] === 'mp4'
+              ? document.createElement('video')
+              : document.createElement('img');
+          mediaObject.setAttribute(
+            'src',
+            `{% get_static_prefix %}media/${currentQuestion.media}`
+          );
+          if (mediaObject.tagName === 'VIDEO') {
+            mediaObject.setAttribute('controls', '');
+          }
+          document.getElementById('question-media').appendChild(mediaObject);
+        }
+
+        if (currentQuestion.selected_answer !== '') {
+          document.getElementsByName('answers').forEach((ele) => {
+            if (ele.value === currentQuestion.selected_answer) {
+              ele.checked = true;
+              document
+                .getElementById(`label_for_${ele.id}`)
+                .classList.add('active');
+            }
+          });
+        }
+      }
+
+      function startExam() {
+        displayQuestion();
+        let timeMinutes = Math.floor(testTime / 60);
+        let timeSeconds = testTime - timeMinutes * 60;
+        timeSeconds =
+          timeSeconds.toString().length > 1 ? timeSeconds : '0' + timeSeconds;
+        document.getElementById(
+          'exam_timer_text'
+        ).textContent = `${timeMinutes}:${timeSeconds}`;
+        window.setInterval(() => {
+          testTime--;
+          if (testTime <= 0) {
+            window.onbeforeunload = function () {};
+            endExam();
+          }
+          let timeMinutes = Math.floor(testTime / 60);
+          let timeSeconds = testTime - timeMinutes * 60;
+          timeSeconds =
+            timeSeconds.toString().length > 1 ? timeSeconds : '0' + timeSeconds;
+          document.getElementById(
+            'exam_timer_text'
+          ).textContent = `${timeMinutes}:${timeSeconds}`;
+        }, 1000);
+      }
+
+      function saveCurrentQuestion() {
+        if (!document.querySelector('input[name="answers"]:checked')) {
+          return;
+        }
+
+        let answer = document.querySelector(
+          'input[name="answers"]:checked'
+        ).value;
+
+        questions[currentQuestionIndex].selected_answer = answer;
+        const answerLabels = document.querySelectorAll('.wrapper');
+        answerLabels.forEach(function (l) {
+          l.classList.remove('active');
+        });
+        document.getElementById('answer_A').checked = false;
+        document.getElementById('answer_B').checked = false;
+        document.getElementById('answer_C').checked = false;
+        document.getElementById('answer_D').checked = false;
+        markers[currentQuestionIndex].div.classList.add('answered');
       }
 
       function nextQuestion() {
-        saveQuestion();
-        currentQuestionIndex++;
-        if (currentQuestionIndex >= max_questions) {
-          currentQuestionIndex = 0;
-        }
-        if (globalQuestions[currentQuestionIndex].answered) {
-          nextQuestion();
-          return;
-        } else if (globalQuestions.filter((question) => question.answered === false).length === 1) {
-          showEndExam();
-        } else {
-          hideEndExam();
-        }
-        showQuestion(globalQuestions[currentQuestionIndex], currentQuestionIndex);
+        console.log(currentQuestionIndex);
+
+        markers[currentQuestionIndex].div.classList.remove('displayed');
+        saveCurrentQuestion();
+        currentQuestionIndex =
+          (currentQuestionIndex + numberOfQuestions + 1) % numberOfQuestions;
+        console.log(currentQuestionIndex);
+        displayQuestion();
       }
 
-      function saveQuestion() {
-        let checkedAnswer = document.querySelector('input[name="answers"]:checked');
-        if (checkedAnswer != null) {
-          checkedAnswer.checked = false;
-          globalQuestions[currentQuestionIndex].answered = true;
-          globalQuestions[currentQuestionIndex].selected_answer = checkedAnswer.value;
-        }
+      function previousQuestion() {
+        console.log(currentQuestionIndex);
+        markers[currentQuestionIndex].div.classList.remove('displayed');
+        saveCurrentQuestion();
+        currentQuestionIndex =
+          (currentQuestionIndex + numberOfQuestions - 1) % numberOfQuestions;
+        console.log(currentQuestionIndex);
+        displayQuestion();
       }
 
-      function showQuestion(question, index) {
-        document.getElementById("question-text").innerHTML = "";
-        document.getElementById("current_question").innerText = `${index + 1}.`;
-        document.getElementById("question-text").innerHTML = `<p>${question["question"]}</p>`;
-        let media = question["media"];
-        if (media != "" && media != null) {
-          if (media.split(".")[1] == "mp4") {
-            document.getElementById(
-              "question-text"
-            ).innerHTML += `<div id='media'><video controls><source src="{% get_static_prefix %}media/${media}" type="video/mp4"></source></video></div>`;
-          } else {
-            document.getElementById(
-              "question-text"
-            ).innerHTML += `<div id='media'><img src="{% get_static_prefix %}media/${media}"  alt="Zdjęcie do zadania"></div>`;
-          }
-        }
-        let copy_answers_id = [...answer_id];
-        for (let length = 4; length > 0; length--) {
-          let answer = question[copy_answers_id.pop(Math.floor(Math.random() * length))];
-          document.getElementById(`label_${letters[length - 1]}`).innerText = answer;
-          document.getElementById(`answer_${letters[length - 1]}`).setAttribute("value", answer);
-        }
+      function goToQuestion(index) {
+        markers[currentQuestionIndex].div.classList.remove('displayed');
+        saveCurrentQuestion();
+        currentQuestionIndex = index;
+        displayQuestion();
       }
 
       async function endExam() {
-        saveQuestion();
-        const questionsToSend = Object.fromEntries(globalQuestions.map((question) => [question.id, question.selected_answer]));
-        // DEBUG
-        console.log("Wysłano pytnia:");
-        console.log(questionsToSend);
+        saveCurrentQuestion();
         let headers = new Headers();
         // add header from cookie
         const csrftoken = document.cookie
-          .split(";")
-          .filter((cookie) => cookie.includes("csrftoken"))[0]
-          .split("=")[1];
+          .split(';')
+          .filter((cookie) => cookie.includes('csrftoken'))[0]
+          .split('=')[1];
 
-        headers.append("X-CSRFToken", csrftoken);
-        const response = await fetch("/results", {
-          method: "POST",
-          body: JSON.stringify({ questions: questionsToSend }),
-          credentials: "same-origin",
+        headers.append('X-CSRFToken', csrftoken);
+        const response = await fetch('/results', {
+          method: 'POST',
+          body: JSON.stringify({ questions: questions }),
+          credentials: 'same-origin',
           headers: headers,
         });
-        window.open("/getResults", "_self");
+        window.open('/getResults', '_self');
       }
 
-      async function getData() {
-        try {
-          const response = await fetch(`/getExam/${code}`);
-          const jsonRes = await response.json();
-          const questionsObject = [];
-          jsonRes.forEach((question) => {
-            questionsObject.push({
-              ...question,
-              answered: false,
-              selected_answer: "",
-            });
+      function getData() {
+        const questionsObject = [];
+        const questions = JSON.parse('{{ questions|escapejs}}');
+        questions.forEach((question) => {
+          questionsObject.push({
+            ...question,
+            selected_answer: '',
           });
-          return questionsObject;
-        } catch (error) {
-          console.log("ERROR WHILE FETCHING DATA: ", error);
-        }
+        });
+        return questionsObject;
       }
 
-      startExam();
+      document.addEventListener('DOMContentLoaded', function () {
+        generateMarkers();
+        startExam();
+      });
     </script>
     <script>
+      const answerLabels = undefined;
+      document.addEventListener('DOMContentLoaded', function () {
+        const answerLabels = document.querySelectorAll('.wrapper');
+        answerLabels.forEach((label) => {
+          label.addEventListener('click', function () {
+            // Remove 'active' class from all labels
+            answerLabels.forEach(function (l) {
+              l.classList.remove('active');
+            });
+            // Add 'active' class to the clicked label
+            this.classList.add('active');
+          });
+        });
+      });
       window.onbeforeunload = function () {
-        return "Jesteś pewien? Utracisz dotychczasowy postęp, a egzamin wygeneruje się na nowo. ";
+        return 'Jesteś pewien? Utracisz dotychczasowy postęp, a egzamin wygeneruje się na nowo. ';
       };
     </script>
   </head>
   <body>
     <div class="container">
-      <div class="exam_content">
+      <div class="exam_header">
+        <p id="exam_name">Egzamin {{examCode}}</p>
+        <div class="exam_timer">
+          <div id="exam_timer_icon">{%bs_icon 'stopwatch' size="1em" %}</div>
+          <span id="exam_timer_text"></span>
+        </div>
+      </div>
+      <div class="questions_markers">
         <p id="current_question"></p>
-        <div id="question-text"></div>
+        <div id="question_markers_container"></div>
+      </div>
+      <div class="exam_content">
+        <p id="question-text"></p>
+        <div id="question-media"></div>
         <div class="answers">
-          <label for="answer_A" class="helper_label">
-            <div class="wrapper">
+          <label for="answer_A" id="label_for_answer_A" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
               <input type="radio" name="answers" id="answer_A" required />
-              <label for="answer_A" id="label_A"></label>
+              <div class="checkmark">A</div>
             </div>
+            <p id="label_A"></p>
           </label>
-          <label for="answer_B" class="helper_label">
-            <div class="wrapper">
-              <input type="radio" name="answers" id="answer_B" />
-              <label for="answer_B" id="label_B"></label>
+          <label for="answer_B" id="label_for_answer_B" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_B" required />
+              <div class="checkmark">B</div>
             </div>
+            <p id="label_B"></p>
           </label>
-          <label for="answer_C" class="helper_label">
-            <div class="wrapper">
-              <input type="radio" name="answers" id="answer_C" />
-              <label for="answer_C" id="label_C"></label>
+          <label for="answer_C" id="label_for_answer_C" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_C" required />
+              <div class="checkmark">C</div>
             </div>
+            <p id="label_C"></p>
           </label>
-          <label for="answer_D" class="helper_label">
-            <div class="wrapper">
-              <input type="radio" name="answers" id="answer_D" />
-              <label for="answer_D" id="label_D"></label></div
-          ></label>
+          <label for="answer_D" id="label_for_answer_D" class="wrapper">
+            {% comment %} content here {% endcomment %}
+            <div>
+              <input type="radio" name="answers" id="answer_D" required />
+              <div class="checkmark">D</div>
+            </div>
+            <p id="label_D"></p>
+          </label>
         </div>
       </div>
       <div class="button-container">
-        <button onclick="nextQuestion()" id="nextQuestion">Następne pytanie</button>
         <button onclick="endExam()" id="endExam">Zakończ egzamin</button>
+        <div class="navigation-buttons">
+          <button onclick="previousQuestion()" id="previousQuestion">
+            Poprzednie pytanie
+          </button>
+          <button onclick="nextQuestion()" id="nextQuestion">
+            Następne pytanie
+          </button>
+        </div>
       </div>
     </div>
   </body>

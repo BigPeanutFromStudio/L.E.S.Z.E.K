@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from typing import Dict,Any
 
 class Code(models.Model):
-    codeName = models.CharField(max_length=5000)
+    code_name = models.CharField(max_length=5000)
     def __str__(self):
-        return self.codeName
+        return self.code_name
 
 # Create your models here.
 class Question(models.Model):
@@ -17,17 +17,17 @@ class Question(models.Model):
     answer_d = models.CharField(max_length=5000)
     correct_answer = models.CharField(null=True,blank=True,max_length=5000)
     media = models.CharField(null=True,blank=True, max_length=5000) #FilePathField
-    code_ID = models.ForeignKey(Code,on_delete=models.DO_NOTHING)
+    code_id = models.ForeignKey(Code,on_delete=models.DO_NOTHING)
     
     class Meta:
-        unique_together = ('question', 'media', 'code_ID')
+        unique_together = ('question', 'answer_a', 'answer_b', 'answer_c', 'answer_d', 'code_id')
     def __str__(self):
         mediaRef = None
         if self.media:
             mediaRef = "vid" if self.media.split('.')[1] == "mp4" else "img" 
         else:
             mediaRef = '0'
-        return f'{self.id}_{self.code_ID}_{mediaRef}'
+        return f'{self.id}_{self.code_id}_{mediaRef}'
 
     def prepare(self) -> Dict[str,Any]:
         return {
@@ -39,14 +39,13 @@ class Question(models.Model):
             'answer_d':self.answer_d,
             'media':self.media
         }
-        ...
 
 class QuestionApplication(models.Model):
-    questionID = models.ForeignKey(Question,on_delete=models.DO_NOTHING)
+    question_id = models.ForeignKey(Question,on_delete=models.CASCADE)
     correct_answer = models.CharField(max_length=5000)
-    user_ID = models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     sent_at = models.DateTimeField()
     def __str__(self):
-        return f'{self.questionID.code_ID} - {self.questionID.question}'
+        return f'{self.question_id.code_id} - {self.question_id.question}'
     
     

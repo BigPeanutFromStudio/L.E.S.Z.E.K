@@ -1,0 +1,64 @@
+{% load static %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+  rel="stylesheet"
+/>
+<link
+  rel="shortcut icon"
+  href="{% static 'logo-zsat.svg' %}"
+  type="image/x-icon"
+/>
+<script>
+  function setCSSVariables() {
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark');
+    } else if (localStorage.getItem('darkMode') === 'false') {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+  function popUpAboutNoAffiliationWithCKE() {
+    if (!localStorage.getItem('popUp')) {
+      const myModal = document.querySelector('dialog');
+      myModal.show();
+      localStorage.setItem('popUp', 'true');
+      const allbuttons = document.getElementsByClassName('btn-exam');
+      for (let index = 0; index < allbuttons.length; index++) {
+        const element = allbuttons[index];
+        element.setAttribute('disabled', true);
+      }
+    }
+  }
+  function closepopUp() {
+    const allbuttons = document.getElementsByClassName('btn-exam');
+    for (let index = 0; index < allbuttons.length; index++) {
+      const element = allbuttons[index];
+      element.removeAttribute('disabled');
+    }
+    const myModal = document.querySelector('dialog');
+    myModal.close();
+  }
+
+  if (!localStorage.getItem('darkMode')) {
+    if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      localStorage.setItem('darkMode', 'false');
+    }
+  }
+  function toggleDarkMode() {
+    localStorage.setItem(
+      'darkMode',
+      localStorage.getItem('darkMode') === 'true' ? 'false' : 'true'
+    );
+    setCSSVariables();
+  }
+  setCSSVariables();
+  document.addEventListener('DOMContentLoaded', function () {
+    popUpAboutNoAffiliationWithCKE();
+  });
+</script>

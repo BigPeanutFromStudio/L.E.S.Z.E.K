@@ -1,16 +1,98 @@
 @import url(root.css);
+@import url(form.css);
 
-body{
-    background-color: var(--background-color);
+body {
+  background-image: var(--gradient-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 75px;
+  padding-bottom: 20px;
 }
 
-.answer{
-    border: 1px solid black;
+.question {
+  width: 90vw;
+  height: --webkit-fill-available;
+
+  padding: 40px;
+  background-color: var(--on-background-color);
+  box-shadow: 0px 4px 12px 0px #00000040;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-.question{
-    margin: 20px;
-    padding: 10px;
-    background-color: var(--primary-color);
-    border-radius: 15px;
+.question-text {
+  font-size: var(--paragraph-text);
+  color: var(--dark-text);
+  font-weight: 600;
+}
+
+.answer {
+  background-color: var(--on-on-background-color, var(--on-background-color));
+  min-height: 50px;
+  border-radius: 15px;
+  border: var(--border);
+  margin: 15px 0;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  display: flex;
+  align-items: center;
+  font-size: var(--other-text);
+  padding: 20px;
+}
+
+.header {
+  padding: 10px;
+}
+
+.home-btn {
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  cursor: pointer;
+  transition: ease 0.1ms transform;
+}
+
+.home-btn:hover {
+  transform: scale(1.1);
+}
+
+h1 {
+  text-align: center;
+  color: var(--dark-text);
+  font-size: var(--title-text);
+}
+
+h2 {
+  text-align: center;
+  color: var(--dark-text);
+  font-size: var(--paragraph-text);
+}
+
+.checkmark {
+  height: 25px;
+  width: 25px;
+  background-color: var(--background-color);
+  padding: 6px;
+  margin-right: 10px;
+  border: 1px solid var(--secondary-color);
+  border-radius: 50%;
+  text-align: center;
+  display: block;
+}
+
+.question-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.question-media img,
+video {
+  max-width: 80%;
+}
+
+.img-answer {
+  width: 20%;
 }

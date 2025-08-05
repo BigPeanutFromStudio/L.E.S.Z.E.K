@@ -1,0 +1,104 @@
+@import url(root.css);
+@import url(form.css);
+
+body {
+  min-height: 100vh;
+  background-color: var(--background-color);
+}
+
+#nextQuestion:hover {
+  transform: scale(1.07);
+}
+
+.button-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+#nextQuestion {
+  border: none;
+  padding: 10px;
+  transition: transform 0.1s ease;
+
+  cursor: pointer;
+  box-shadow: 0px 4px 12px 0px #00000040;
+  font-size: var(--medium-text);
+  border-radius: 8px;
+
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  width: 230px;
+}
+
+h1 {
+  text-align: center;
+  font-size: var(--title-text);
+}
+.toastContain {
+  z-index: 1050; 
+  position: fixed;
+  left: 50%;
+  bottom: 4rem;
+  width: fit-content;
+  min-width: 18rem;
+  transform: translateX(-50%);
+  /* To see multiple toasts stack if they appear close together */
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center; /* Ensures toasts within container are centered if their width is less than min-width */
+}
+
+.toast {
+  opacity: 0;
+  min-height: 2rem;
+  /* margin-top: -2.5rem; /* Initial off-screen position for slide-down */
+  margin-bottom: -2.5rem; /* Adjusted for flex-direction: column-reverse stacking */
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem; /* Combined padding */
+  background-color: #ffffff;
+  border: 1px solid #e7e5e4;
+  text-align: center;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  width: auto; /* Let content determine width up to max-width */
+  max-width: 90vw; /* Prevent overly wide toasts */
+  transform: scale(0.9) translateY(50px); /* Initial state: slightly scaled down and shifted down */
+  /* transition: margin-top 0.5s, transform 0.5s, opacity 0.5s; */
+  transition: margin-bottom 0.5s, transform 0.5s, opacity 0.5s; /* Adjusted for flex-direction */
+}
+
+.toast.open {
+  /* margin-top: 0.5rem; /* Final position on screen */
+  margin-bottom: 0.5rem; /* Adjusted for flex-direction */
+  transform: scale(1) translateY(0); /* Final state: full scale, original Y position */
+  opacity: 1;
+}
+
+.toast.success {
+  background-color: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.toast.failure {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.toast.warning {
+  background-color: #ffedd5;
+  border-color: #fdba74;
+  color: #9a3412;
+}
+
+#question-media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#question-media img,
+video {
+  max-width: 80%;
+}

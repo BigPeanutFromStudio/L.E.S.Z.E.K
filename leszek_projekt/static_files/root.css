@@ -1,19 +1,125 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+/* 
+Light-theme
+background-color and light-text:  #FBFBFE
+on-background-color: #FCFCFF
+primary-color(big buttons): #006A71
+second-color: #48A6A7
+black-text: #040316
+gradient-light: #EEF6F7 -> #9ACBD0
+grey: #585E5F
 
-:root{
-    --background-color: #9ACBD0;
-    --primary-color: #48A6A7;
-    --secondary-color: #006A71;
-    --text-color: rgb(241, 241, 241);
-    
-    --small-text: 10px;
-    --medium-text: 24px;
-    --large-text: 36px;
-    --xlarge-text: 48px;
+
+Dark-theme
+light-text: #FBFBFE
+second-color-dark: #31797F
+primary-color(big buttons): #006A71
+background-color-dark: #262B2C
+on-background-color-dark: #414546
+header: #151A1B
+gradient-dark: #161C1D -> #262B2C
+grey and on-on-background-color-dark: #585E5F
+
+green: 14AE5C
+greener: 03723D
+
+red: #CC211E
+reder: #940505
+
+*/
+
+:root {
+  --light-text: #fbfbfe;
+  --dark-text: #040316;
+  --grey: #d9d9d9;
+  --green: #14ae5c;
+  --greener: #03723d;
+  --red: #cc211e;
+  --redder: #940505;
+  --yellow: #e8b931;
+
+  --checkmark-hover-color: #12555b; /* <- color-mix(in srgb, var(--primary-color), rgba(0, 0, 0, 0.25)); */
+
+  /* LIGHT THEME */
+  --background-color: #fbfbfe;
+  --header: #fbfbfe;
+  --on-background-color: #fcfcff;
+  --primary-color: #006a71;
+  --secondary-color: #48a6a7;
+  --gradient-light: linear-gradient(#eef6f7, #9acbd0);
+  --box-shadow: 0px 4px 12px 0px #00000040;
+  --border: 1px solid rgba(0, 106, 113, 0.5);
+
+  --small-text: 14px;
+  --other-text: 22px;
+  --paragraph-text: 26px;
+  --header-text: 38px;
+  --title-text: 56px;
+  --button-text: 24px;
 }
 
-*{
-    font-family: 'Oswald', serif;
-    margin: 0;
-    padding: 0;
+:root.dark {
+  --grey: #585e5f;
+  --background-color: #262b2c;
+  --on-background-color: #414546;
+  --on-on-background-color: #585e5f;
+  --primary-color: #006a71;
+  --secondary-color: #31797f;
+  --gradient-light: linear-gradient(#161c1d, #262b2c);
+  --header: #151a1b;
+  --light-text: #fbfbfe;
+  --dark-text: #fbfbfe;
+  --box-shadow: none;
+  --border: none;
+}
+
+* {
+  color: var(--dark-text);
+}
+
+* {
+  font-family: 'Inter', serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: relative;
+}
+
+dialog {
+  position: absolute;
+  width: 30vw;
+  background-color: var(--grey);
+  height: 18vh;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10000;
+  box-shadow: 0px 0px 35px 3000px hsla(184, 100%, 10%, 0.5);
+  border: var(--secondary-color) 2px solid;
+  border-radius: 8px;
+  padding: 10px;
+}
+dialog p,
+dialog h2 {
+  color: var(--dark-text);
+}
+dialog .top {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 10px;
+}
+dialog p {
+  padding: 10px;
+}
+dialog button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: var(--secondary-color) 2px solid;
+  border-radius: 5px;
+  width: 20px;
+}
+dialog button svg path {
+  color: var(--light-text) !important;
 }

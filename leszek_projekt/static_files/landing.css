@@ -1,51 +1,206 @@
 @import url(root.css);
 
-body{
-    background-color: var(--background-color);
-    color: var(--text-color);
+html {
+  min-height: 100%;
 }
 
-h1{
-    text-align: center;
-    margin: 5px;
-    font-size: var(--xlarge-text);
+body {
+  background-image: var(--gradient-light);
+  color: var(--dark-text);
+  min-height: 100vh;
 }
 
-
-.login-container{
-    position: absolute;
-    right: 15px;
-    top: 25px;
-    cursor: pointer;
-    transition: transform 0.1s ease;
-}
-.login-container:hover{
-    transform: scale(1.1);
-}
-
-.content{
-    margin-top: 50px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    justify-items: center;
+header {
+  background-color: var(--header);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 120px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  margin-bottom: 40px;
+  padding: 0px 10px;
 }
 
-.card{
-    width: 500px;
-    height: 250px;
-    background-color: var(--primary-color);
-    font-size: var(--large-text);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    cursor: pointer;
-    box-shadow: 0px 4px 10px 0px rgba(66, 68, 90, 1);
-    transition: transform 0.1s ease;
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  width: 300px;
 }
 
-.card:hover{
-    transform: scale(1.03);
+.btn_mock_cke {
+  display: flex;
+  align-items: center;
+  height: 30%;
+  border-radius: 8px;
+  gap: 8px;
+  padding: 8px 10px;
+  background-color: var(--primary-color);
+  transition: ease 0.1s transform;
+  cursor: pointer;
+}
+
+.btn_mock_cke * {
+  color: var(--light-text);
+}
+
+.btn_mock_cke:hover {
+  transform: scale(1.05);
+}
+
+.switch {
+  cursor: pointer;
+  transition: ease 0.1s transform;
+}
+
+.switch:hover {
+  transform: scale(1.1);
+}
+
+h1 {
+  text-align: center;
+  margin: 5px;
+  font-size: var(--header-text);
+  font-weight: 600;
+}
+
+.login-container {
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.login-container:hover {
+  transform: scale(1.1);
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.content {
+  position: relative;
+  margin: 20px 0px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  column-gap: 20px;
+  row-gap: 50px;
+  justify-items: center;
+}
+
+.card {
+  position: relative;
+  width: 350px;
+  height: 200px;
+  padding: 20px;
+  background-color: var(--on-background-color);
+  font-size: var(--large-text);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.quantity_display {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background-color: var(--secondary-color);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+.unselectable {
+  all: unset;
+
+  padding: 5px;
+}
+
+.extra {
+  font-size: var(--small-text);
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+h2 {
+  color: var(--dark-text);
+  font-size: var(--paragraph-text);
+  font-weight: 500;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.btn-exam {
+  all: unset;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  font-size: var(--button-text);
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.btn-exam:hover {
+  transform: scale(1.05);
+}
+
+.questions_in_exam {
+  background-color: var(--secondary-color);
+  border-radius: 5px;
+  padding: 5px;
+  border: unset;
+  transition: ease 0.1s transform;
+  cursor: pointer;
+  color: var(--dark-text);
+}
+
+.questions_in_exam:hover {
+  transform: scale(1.05);
+}
+
+#logout-button {
+  all: unset;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+}
+#logout-button:hover {
+  transform: scale(1.1);
+}
+#logout-form {
+  display: inline;
+}
+
+select {
+  color: var(--light-text);
+}
+
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  padding: 10px 10px 0px 0px;
+  margin-right: 10px;
+  font-size: var(--small-text);
+  display: flex;
+  flex-direction: column;
+}
+a {
+  padding-top: 5px;
+}
+
+.normal-link {
+  cursor: pointer;
+  color: var(--primary-color);
+  text-decoration: underline;
 }
