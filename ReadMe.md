@@ -11,11 +11,23 @@ Jeśli znajdzie się ktoś chętny na długotrwałe i aktywne wspieranie/przeję
 ## Przygotowanie dla developerów
 
 Projekt został stworzony przy użyciu pythona >=3.12.3 oraz biblioteki [Django](https://www.djangoproject.com/ 'Dokumentacja Django').
+![landing dark](./screenshots/landing-dark.png)
+
+## Omówienie
+
+L.E.S.Z.E.K jest systemem mającym na celu pomoc uczniom przystępującym do egzaminów zawodowych. Głównie skupia się on na ZSAT w Ropczycach jednak jest on otwarty dla każdego. Poniżej znajdują się instrukcje dla ambitnych i pełnych energii (jeszcze) programistów, którzy chcą się przyczynić do projektu. Repozytorium może posłużyć również jako materiał edukacyjny/treningowy dla tych, którzy chcą nauczyć się pracować i przyczyniać się do publicznych projektów.
+
+Jeśli znajdzie się ktoś chętny na długotrwałe i aktywne wspieranie/przejęcie projektu, dajcie nam znać (najlepiej przez github discussions), a przedyskutujemy wszelkie szczegóły.
+
+## Przygotowanie dla developerów
+
+Projekt został stworzony przy użyciu pythona >=3.12.3 oraz biblioteki [Django](https://www.djangoproject.com/ 'Dokumentacja Django').
 
 Systemu należy używać poprzez wirtualne środowisko pythona. Po sklonowaniu repozytorium należy jednorazowo stworzyć to środowisko.
 Aby je stworzyć postępuj wedle następujących kroków.
 
 1. Stwórz wirtualne środowisko (nazwę "leszek" można zastąpić dowolną nazwą)
+
 
 ```pwsh
 $  py -m venv leszek
@@ -65,11 +77,14 @@ UWAGA: Poniższe kroki należy wykonywać będąc w wirtualnym środowisku pytho
 
 1. Przejdź do folderu leszek_projekt
 
+
 ```pwsh
 $ cd .\leszek_projekt
 ```
 
+
 2. Aby uruchomić serwer użyj komendy:
+
 
 ```pwsh
 $ py manage.py runserver
@@ -79,7 +94,9 @@ $ py manage.py runserver
 
 1. Do folderu "leszek_projekt\import_data" przenieś plik "questions_import.json" otrzymany po użyciu A.S.P.E.K.T
 
+
 2. Użyj komendy:
+
 
 ```pwsh
 $ py manage.py loaddata .\import_data\questions_export.json

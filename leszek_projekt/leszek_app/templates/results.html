@@ -1,9 +1,11 @@
 {% load bootstrap_icons %} {% load static %}
+{% load bootstrap_icons %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% include "template_base.html" %}
     {% include "template_base.html" %}
     <link rel="stylesheet" href="{% static 'results.css' %}" />
     <title>Wyniki</title>
@@ -101,6 +103,8 @@
 
         div.appendChild(answersDiv);
 
+        div.appendChild(answersDiv);
+
         document.body.appendChild(div);
       }
 
@@ -112,7 +116,27 @@
           document.getElementById('score').innerText =
             'Wynik: ' + data.score + `/${data.questions.length}`;
           document.getElementById('date').innerText = data.date;
+      function getData() {
+        const json = `{{ results|escapejs }}`;
+        const data = JSON.parse(json);
+
+        if (data.msg === 'Success') {
+          document.getElementById('score').innerText =
+            'Wynik: ' + data.score + `/${data.questions.length}`;
+          document.getElementById('date').innerText = data.date;
           data.questions.forEach((question) => {
+            createDiv(
+              question.question,
+              question.media,
+              [
+                question.answer_a,
+                question.answer_b,
+                question.answer_c,
+                question.answer_d,
+              ],
+              question.correct_answer,
+              question.selected_answer
+            );
             createDiv(
               question.question,
               question.media,
@@ -138,9 +162,25 @@
         const currentUrl = window.location.href;
         window.open('/', '_self');
       }
+      document.addEventListener('DOMContentLoaded', function () {
+        getData();
+      });
+
+      function goHome() {
+        const currentUrl = window.location.href;
+        window.open('/', '_self');
+      }
     </script>
   </head>
   <body>
+    <div class="header">
+      <div class="home-btn" onclick="goHome()">
+        {% bs_icon 'house' size="3rem"%}
+      </div>
+      <div class="data">
+        <h1 id="score"></h1>
+        <h2 id="date"></h2>
+      </div>
     <div class="header">
       <div class="home-btn" onclick="goHome()">
         {% bs_icon 'house' size="3rem"%}
