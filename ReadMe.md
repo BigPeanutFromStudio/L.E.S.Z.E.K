@@ -6,7 +6,7 @@
 
 L.E.S.Z.E.K jest systemem mającym na celu pomoc uczniom przystępującym do egzaminów zawodowych. Głównie skupia się on na ZSAT w Ropczycach jednak jest on otwarty dla każdego. Poniżej znajdują się instrukcje dla ambitnych i pełnych energii (jeszcze) programistów, którzy chcą się przyczynić do projektu. Repozytorium może posłużyć również jako materiał edukacyjny/treningowy dla tych, którzy chcą nauczyć się pracować i przyczyniać się do publicznych projektów.
 
-Jeśli znajdzie się ktoś chętny na długotrwałe i aktywne wspieranie/przejęcie projektu, dajcie nam znać (najlepiej przez github discussions), a przedyskutujemy wszelkie szczegóły.
+Jeśli znajdzie się ktoś chętny na długotrwałe i aktywne wspieranie/przejęcie projektu, dajcie nam znać (najlepiej przez Github Discussions), a przedyskutujemy wszelkie szczegóły.
 
 ## Przygotowanie dla developerów
 
@@ -59,7 +59,7 @@ $  py -m pip install -r requirements.txt
 $ py manage.py migrate
 ```
 
-1. Zaimportuj dane, najpierw importując kody z pliku [.\import_data\codes.json](leszek_projekt\import_data\codes.json), a następnie przykładowe pytania z pliku [.\import_data\example_questions.json](leszek_projekt\import_data\example_questions.json) [(jak importować niżej)](#jak-zaimportować-dane-z-systemu-aspekt) lub pytania z aktualnej bazy danych.
+1. Zaimportuj dane, najpierw importując kody z pliku [.\import_data\codes.json](leszek_projekt/import_data/codes.json), a następnie przykładowe pytania z pliku [.\import_data\example_questions.json](leszek_projekt/import_data/example_questions.json) [(jak importować niżej)](#jak-zaimportować-dane-z-systemu-aspekt) lub pytania z aktualnej bazy danych.
 
 ```pwsh
 $ py manage.py loaddata .\import_data\codes.json
@@ -119,5 +119,7 @@ Następnie do folderu "leszek_projekt\static_files\media" przenieś wszystkie pl
 
 ## Contributing
 
-- Błędy/buggi reporting: [GitHub Issues](https://github.com/BigPeanutFromStudio/L.E.S.Z.E.K/issues)
-- Pull request są mile widziane ale polecamy wtedy przejęcie repo.
+- Błędy/buggi reporting: [GitHub Issues](https://github.com/BigPeanutFromStudio/L.E.S.Z.E.K/issues)  
+- Pull request są mile widziane ale polecamy wtedy przejęcie repo 
+- Kontakt oraz pomysły prosimy kierować na [Github Discussions](https://github.com/BigPeanutFromStudio/L.E.S.Z.E.K/discussions).
+
