@@ -96,3 +96,13 @@ video {
 .img-answer {
   width: 20%;
 }
+
+.question-point-text {
+  font-size: var(--paragraph-text);
+}
+
+.question-text-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

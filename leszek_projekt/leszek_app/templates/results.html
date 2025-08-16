@@ -9,6 +9,7 @@
     <title>Wyniki</title>
     <script>
       // Whoever is working on this code, I'm sorry
+      // Update: I had to work on this code now, I'm really really sorry
       function createDiv(
         question,
         question_media,
@@ -23,7 +24,20 @@
         const p = document.createElement('p');
         p.classList.add('question-text');
         p.appendChild(text);
-        div.appendChild(p);
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('question-text-div');
+        textDiv.appendChild(p);
+        const pointsP = document.createElement('p');
+        const pointsText =
+          correct_answer === selected_answer
+            ? document.createTextNode('1/1')
+            : document.createTextNode('0/1');
+
+        pointsP.append(pointsText);
+        pointsP.classList.add('question-point-text');
+        textDiv.appendChild(pointsP);
+
+        div.appendChild(textDiv);
 
         const mediaDiv = document.createElement('div');
         mediaDiv.classList.add('question-media');

@@ -11,10 +11,9 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-def landing(request: HttpRequest):
-    if (request.user.is_authenticated): 
-        applied_question_ids = QuestionApplication.objects.values("question_id")
-        classifications_quantities = list(Question.objects.filter(correct_answer__isnull=True)
+def _prepare(bool):
+    applied_question_ids = QuestionApplication.objects.values("question_id")
+    return list(Question.objects.filter(correct_answer__isnull=bool)
     .exclude(pk__in=applied_question_ids)
     .annotate(
         code_name=F("code_id__code_name")
@@ -22,8 +21,13 @@ def landing(request: HttpRequest):
     .values("code_name")
     .annotate(count=Count("id")) 
     .order_by("code_name"))
+    
+
+def landing(request: HttpRequest):
+    if (request.user.is_authenticated): 
+        classifications_quantities = _prepare(True)
     else:
-        classifications_quantities = list(Code.objects.annotate(count=Count('question')).values('code_name', 'count'))
+        classifications_quantities = _prepare(False)
     print(classifications_quantities)
     return render(request, "landing.html", {"classifications": classifications_quantities})
 
@@ -32,7 +36,7 @@ def exam(request: HttpRequest):
     examCode = request.GET.get("code")
     numberOfQuestions = int(request.GET.get("nr"))
     numberOfQuestions = max(1, min(40, numberOfQuestions))
-    questions = list(map(lambda q: q.prepare(), Question.objects.filter(code_id=Code.objects.get(code_name=examCode)).order_by("?")[:numberOfQuestions]))
+    questions = list(map(lambda q: q.prepare(), Question.objects.filter(code_id=Code.objects.get(code_name=examCode)).filter(correct_answer__isnull=False).order_by("?")[:numberOfQuestions]))
     
     context = {"examCode": examCode, "questions": dumps(questions), "numberOfQuestions": numberOfQuestions}
     print(context)
