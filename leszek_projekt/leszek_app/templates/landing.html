@@ -1,12 +1,6 @@
 {% load bootstrap_icons %} {% load static %}
-{% load bootstrap_icons %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'landing.css' %}" />
-    {% include "template_base.html" %}
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,7 +46,7 @@
       function toggleTime(id) {
         let timeID = id + '_time';
         document.getElementById(timeID).innerText =
-          document.getElementById(id).value + " min";
+          document.getElementById(id).value + ' min';
       }
 
       let authors = ['Piotr Bielański', 'Hubert Drozd'];
@@ -163,4 +157,3 @@
     </div>
   </body>
 </html>
-
