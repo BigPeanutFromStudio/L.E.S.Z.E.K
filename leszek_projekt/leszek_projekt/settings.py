@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
@@ -22,23 +23,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^rj44l=-jigng(wcuzigyzgvh%0ydk^a7z^1__jm2t&fwtgolf'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True 
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 # Application definition
 
 INSTALLED_APPS = [
 
-    "unfold",  
-    "unfold.contrib.filters",  
-    "unfold.contrib.forms",  
-    "unfold.contrib.inlines",  
-    "unfold.contrib.guardian", 
-    "unfold.contrib.simple_history",  
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
+    "unfold.contrib.guardian",
+    "unfold.contrib.simple_history",
     "unfold.contrib.import_export",
     'import_export',
     'django.contrib.admin',
@@ -49,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'leszek_app',
     'django_bootstrap_icons',
-
 ]
 
 MIDDLEWARE = [
@@ -88,8 +88,14 @@ WSGI_APPLICATION = 'leszek_projekt.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.{}'.format(
+            os.getenv('DATABASE_ENGINE', 'sqlite3')
+        ),
+        'NAME': os.getenv('DATABASE_NAME', 'polls'),
+        'USER': os.getenv('DATABASE_USERNAME', 'myprojectuser'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'password'),
+        'HOST': os.getenv('DATABASE_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DATABASE_PORT', 5432),
     }
 }
 
@@ -125,7 +131,7 @@ USE_I18N = True
 USE_TZ = True
 
 LANGUAGES = [
-    ('pl',_('Polish'))
+    ('pl', _('Polish'))
 ]
 
 LOCALE_PATHS = [
@@ -140,7 +146,8 @@ INTERNAL_IPS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static_files/'
+STATIC_URL = '/static_files_prod/'
+STATIC_ROOT = BASE_DIR / "static_files_prod"
 STATICFILES_DIRS = [
     BASE_DIR / 'static_files/'
 ]
@@ -150,6 +157,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1337']
 
 UNFOLD = {
     "STYLES": [
@@ -161,8 +169,8 @@ UNFOLD = {
             "600": "0, 106, 113",
             "700": "0, 106, 113",
         },
-        "primary":{
-            "500" : "72, 166, 167",
+        "primary": {
+            "500": "72, 166, 167",
             "600": "0, 106, 113",
             "700": "0, 106, 113",
             "900": "0,72,77",
