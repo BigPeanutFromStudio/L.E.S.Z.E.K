@@ -42,19 +42,24 @@ $ .\leszek\Scripts\activate
 $  py -m pip install -r requirements.txt
 ```
 
-5. Przeprowadź migracje aby baza danych została zinicjalizowana
+5.
+```pwsh
+$ cd .\leszek_projekt
+```
+
+6. Przeprowadź migracje aby baza danych została zinicjalizowana
 
 ```pwsh
 $ py manage.py migrate
 ```
 
-1. Zaimportuj dane, najpierw importując kody z pliku [.\import_data\codes.json](leszek_projekt/import_data/codes.json), a następnie przykładowe pytania z pliku [.\import_data\example_questions.json](leszek_projekt/import_data/example_questions.json) [(jak importować niżej)](#jak-zaimportować-dane-z-systemu-aspekt) lub pytania z aktualnej bazy danych.
+7. Zaimportuj dane, najpierw importując kody z pliku [.\import_data\codes.json](leszek_projekt/import_data/codes.json), a następnie przykładowe pytania z pliku [.\import_data\example_questions.json](leszek_projekt/import_data/example_questions.json) [(jak importować niżej)](#jak-zaimportować-dane-z-systemu-aspekt) lub pytania z aktualnej bazy danych.
 
 ```pwsh
 $ py manage.py loaddata .\import_data\codes.json
 ```
 
-7. Stwórz super usera
+8. Stwórz super usera
 
 ```pwsh
 $ py manage.py createsuperuser
@@ -85,7 +90,6 @@ $ py manage.py runserver
 
 
 2. Użyj komendy:
-
 
 ```pwsh
 $ py manage.py loaddata .\import_data\questions_export.json
