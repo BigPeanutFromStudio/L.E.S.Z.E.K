@@ -1,48 +1,57 @@
 services:
- db:
-   image: postgres:17
-   environment:
-     POSTGRES_DB: ${DATABASE_NAME}
-     POSTGRES_USER: ${DATABASE_USERNAME}
-     POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-   ports:
-     - "5432:5432"
-   volumes:
-     - postgres_data:/var/lib/postgresql/data
-   env_file:
-     - .env
- django-web:
-   build: .
-   command: gunicorn leszek_projekt.wsgi:application --bind 0.0.0.0:8000
-   container_name: django-docker
-   expose:
-     - "8000:8000"
-   depends_on:
-     - db
-   volumes:
-    - static_volume:/app/leszek_projekt/static_files_prod
-   environment:
-     DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-     DEBUG: ${DEBUG}
-     DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
-     DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
-     DATABASE_ENGINE: ${DATABASE_ENGINE}
-     DATABASE_NAME: ${DATABASE_NAME}
-     DATABASE_USERNAME: ${DATABASE_USERNAME}
-     DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-     DATABASE_HOST: ${DATABASE_HOST}
-     DATABASE_PORT: ${DATABASE_PORT}
-   env_file:
-     - .env
- nginx:
-  build: ./nginx
-  ports:
-    - 1337:80
-  volumes:
-    - static_volume:/app/leszek_projekt/static_files_prod
-  depends_on:
-    - django-web
-    - db
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_PORT: ${DATABASE_PORT}
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+  django-web:
+    build: .
+    container_name: django-docker
+    command: gunicorn leszek_projekt.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - static_volume:/app/leszek_projekt/static_files_prod
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG}
+      DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DATABASE_ENGINE: ${DATABASE_ENGINE}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      PORT: ${PORT}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+    env_file:
+      - .env
+  nginx:
+    build: ./nginx
+    environment:
+      PORT: ${PORT}
+    ports:
+      - ${PORT}:80
+    volumes:
+      - static_volume:/app/leszek_projekt/static_files_prod
+    depends_on:
+      - django-web
+      - db
+    env_file:
+      - .env
 volumes:
-   postgres_data:
-   static_volume:
+  postgres_data:
+  static_volume:

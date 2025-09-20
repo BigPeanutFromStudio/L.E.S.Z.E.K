@@ -1,5 +1,11 @@
 # Use the official Python runtime image
 FROM python:3.13  
+
+# Install tzdata (needed for timezone support)
+RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+
+# Set timezone via environment variable (overridable at runtime)
+ENV TZ=Europe/Warsaw
  
 # Create the app directory
 RUN mkdir /app
@@ -12,7 +18,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 #Prevents Python from buffering stdout and stderr
 ENV PYTHONUNBUFFERED=1 
- 
+
 # Upgrade pip
 RUN pip install --upgrade pip 
  
@@ -26,6 +32,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 WORKDIR /app/leszek_projekt
+
 # Expose the Django port
 EXPOSE 8000
 # copy entrypoint.sh

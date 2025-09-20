@@ -40,7 +40,10 @@ def exam(request: HttpRequest):
     numberOfQuestions = max(1, min(40, numberOfQuestions))
     questions = list(map(lambda q: q.prepare(), Question.objects.filter(code_id=Code.objects.get(
         code_name=examCode)).filter(correct_answer__isnull=False).order_by("?")[:numberOfQuestions]))
-
+    
+    if len(questions) < numberOfQuestions:
+        numberOfQuestions = len(questions)
+    
     context = {"examCode": examCode, "questions": dumps(
         questions), "numberOfQuestions": numberOfQuestions}
     print(context)
@@ -87,7 +90,8 @@ def application_form_view(request, code):
 def save_correct_answer(request: HttpRequest):
     question = Question.objects.get(id=loads(request.body)["question"]["id"])
     correct_answer = loads(request.body)["question"]["correct_answer"]
-
+    if QuestionApplication.objects.filter(question_id=question).exists():
+        return JsonResponse({"success": False, "message": "Odpowiedź na to pytanie została już zapisana."})
     question_aplication = QuestionApplication(
         question_id=question, correct_answer=correct_answer, user_id=request.user, sent_at=datetime.now())
     question_aplication.save()

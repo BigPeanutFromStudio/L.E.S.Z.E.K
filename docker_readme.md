@@ -1,14 +1,11 @@
 # Jak skonfigurować dockera (prod)
-0. Utwórz na wzór [.env_template](/.env_template) .env file w root
-1. Po sklonowaniu repo w root projektu użyj
-``` pwsh
-docker compose up --build
-```
-2. Następnie użyj w nowym terminalu
-```pwsh
-docker compose run django-web python manage.py migrate
-```
-3. Na koniec uruchom komendę
-```pwsh
-docker compose -f compose.yml exec django-web python manage.py collectstatic --no-input --clear
-```
+0. Zainstaluj dockera https://www.docker.com/
+1. Utwórz na wzór [.env_template](/.env_template) plik .env w root
+   Koniecznie zmień:
+   - DJANGO_SECRET_KEY
+   - wszystkie zmienne środowiskowe dotyczące danych logowania
+   - NIE ZAPOMNIJ DODAĆ IP SERWERA (IP W SIECI LOKALNEJ) DO `DJANGO_ALLOWED_HOSTS`
+2. Odpal run.bat
+3. Gotowe
+
+> ⚠️ UWAGA run.bat należy udpalić tylko przy pierwszym uruchomieniu każde następne powinno się odbywać z docker desktop lub przez komendę `docker compose up` ⚠️

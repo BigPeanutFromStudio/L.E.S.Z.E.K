@@ -157,7 +157,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:1337']
+CSRF_TRUSTED_ORIGINS = ["http://"+x+":"+os.environ.get("PORT", "1337") for x in os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",") ]
+
 
 UNFOLD = {
     "STYLES": [
